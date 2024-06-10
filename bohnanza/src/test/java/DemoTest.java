@@ -51,10 +51,12 @@ public class DemoTest {
 		});
 	}
 
+/*
 	@Test
 	@DisplayName("Demonstration of failing.")
 	public void demoFailure() {
 		fail();
 	}
+*/
 
 }

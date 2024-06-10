@@ -8,13 +8,13 @@ import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import io.bitbucket.plt.sdp.bohnanza.gui.Label;
 import io.bitbucket.plt.sdp.bohnanza.gui.Size;
 
-public class Game implements Runnable {
+public class GameView implements Runnable {
     
 	private final GUI gui;
     @SuppressWarnings("unused")
     private final String[] args;
 
-    public Game(GUI gui, String[] args) {
+    public GameView(GUI gui, String[] args) {
         super();
         this.gui = gui;
         this.args = args;

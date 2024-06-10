@@ -8,37 +8,37 @@ import java.util.stream.Collectors;
 
 public class BeanField {
     private final Player player;
-    private final Map<Card, Integer> beans = new HashMap<>();
-    private int numberOfFields = 2; //a default value
+    private final List<PlantingSpot> plantingSpots = new LinkedList<>();
 
     protected BeanField(Player player) {
         this.player = player;
     }
 
-    public boolean canPlant(Card card) {
-        if (beans.containsKey(card)) {
-            return true;
-        }
+    protected List<PlantingSpot> getPlantingSpots() {
+        return plantingSpots;
+    }
 
-        return beans.size() < numberOfFields;
+    public boolean canPlant(Card card) {
+        return plantingSpots.stream().anyMatch(spot -> spot.canPlant(card));
+    }
+
+    public boolean canPlant(int plantingSpotIdx, Card card) {
+        return plantingSpots.get(plantingSpotIdx).canPlant(card);
     }
 
     /**
      * plant a bean in a field
      * @param card to plant
-     * @throws NotEnoughBeanFieldException if there is no field to plant the card
+     * @param plantingSpotIdx index of the field to plant the card
+     * @throws RuntimeException if there is no field to plant the card
      * see canPlant()
      */
-    public void plant(Card card) {
-        if (!canPlant(card)) {
-            throw new NotEnoughBeanFieldException();
+    public void plant(int plantingSpotIdx, Card card) {
+        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);
+        if (!spot.canPlant(card)) {
+            throw new RuntimeException("can not plant card in field");
         }
-
-        if (beans.containsKey(card)) {
-            beans.put(card, beans.get(card) + 1);
-        } else {
-            beans.put(card, 1);
-        }
+        spot.plant(card);
     }
 
     public int getNumberOfFields(){return numberOfFields;}

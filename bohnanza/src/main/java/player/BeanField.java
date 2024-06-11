@@ -4,6 +4,7 @@ import card.Card;
 import game.Game;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BeanField {
     private final Player player;
@@ -11,10 +12,6 @@ public class BeanField {
 
     protected BeanField(Player player) {
         this.player = player;
-    }
-
-    public List<PlantingSpot> getPlantingSpots() {
-        return plantingSpots;
     }
 
     /**
@@ -50,7 +47,7 @@ public class BeanField {
 
     public void addBeanfields(int numOfFields){
         for (int i = 0; i < numOfFields; i++) {
-            plantingSpots.add(new PlantingSpot(this));
+            plantingSpots.add(new PlantingSpot());
         }
     }
 
@@ -59,19 +56,19 @@ public class BeanField {
      * @param plantingSpotIdx index of the field to harvest
      */
     public void harvest(int plantingSpotIdx) {
-        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);
-        if (spot.canHarvest()) {
+        if (canHarvest(plantingSpotIdx)) {
             throw new RuntimeException("can not harvest bean  of type: ");
         }
 
-        uncheckedHarvest(spot);
+        uncheckedHarvest(plantingSpotIdx);
     }
 
     /**
      * harvest a field and add coins to player without checking if it can be harvested
-     * @param spot: PlantingSpot to harvest
+     * @param plantingSpotIdx index of the field to harvest
      */
-    private void uncheckedHarvest(PlantingSpot spot) {
+    private void uncheckedHarvest(int plantingSpotIdx) {
+        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);
         int cardCount = spot.getNumberOfBeans();
         Card card = spot.getPlantedCard();
         int coins = card.getHarvestRevenue(cardCount);
@@ -87,7 +84,10 @@ public class BeanField {
      * check if a field can be harvested
      */
     public boolean canHarvest(int plantingSpotIdx) {
-        return plantingSpots.get(plantingSpotIdx).canHarvest();
+        int n = plantingSpots.get(plantingSpotIdx).getNumberOfBeans();
+
+        // Bean Protection Act
+        return ! (n == 1 && plantingSpots.stream().anyMatch(spot -> spot.getNumberOfBeans() > 1));
     }
 
     public int getNumberOfBeansInField(int plantingSpotIdx) {
@@ -95,11 +95,23 @@ public class BeanField {
     }
 
     /**
+     * get all planted beans
+     * empty fields are represented as card == null
+     */
+    public List<Card> getPlantedBeans() {
+        return plantingSpots.stream()
+                .map(PlantingSpot::getPlantedCard)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * harvest all fields and add coins to player
      * used at the end of the game
      */
     public void harvestAll() {
-        plantingSpots.forEach(this::uncheckedHarvest);
+        for (int i = 0; i < getNumberOfFields(); i++) {
+            uncheckedHarvest(i);
+        }
     }
 
     public void buyExtraBeanField() {

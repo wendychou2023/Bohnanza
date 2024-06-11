@@ -3,13 +3,8 @@ package player;
 import card.Card;
 
 public class PlantingSpot {
-    private final BeanField beanField;
     private int numberOfBeans;
     private Card plantedCard = null;
-
-    public PlantingSpot(BeanField beanField) {
-        this.beanField = beanField;
-    }
 
     public Card getPlantedCard() {
         return plantedCard;
@@ -34,11 +29,6 @@ public class PlantingSpot {
 
     public boolean canPlant(Card card) {
         return isEmpty() || plantedCard.equals(card);
-    }
-
-    public boolean canHarvest() {
-        // Bean Protection rule
-        return ! (numberOfBeans == 1 && beanField.getPlantingSpots().stream().anyMatch(spot -> spot.getNumberOfBeans() > 1));
     }
 
     public boolean isEmpty() {

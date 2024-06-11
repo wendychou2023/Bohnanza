@@ -62,7 +62,7 @@ public class Game {
             player.addToHand(deck.drawN(5));
 
             //set number of beanfields
-            player.getBeanField().setNumberOfFields(numberOfBeanfields);
+            player.getBeanField().addBeanfields(numberOfBeanfields);
         }
     }
 

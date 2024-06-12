@@ -1,6 +1,10 @@
 package game;
 
+import card.Card;
 import io.bitbucket.plt.sdp.bohnanza.gui.*;
+import player.Player;
+
+import java.util.List;
 
 public class GameView implements Runnable {
     private GameController gameController;
@@ -26,31 +30,50 @@ public class GameView implements Runnable {
     }
 
     private void setupGUI(){
+        gui.addButton("start", new Coordinate(620, 150), new Size(80, 25), button -> {
+            gameController.userClickStart();
+        });
+
+        /*
+        Some idea:
+        Add a start game button -> after clicking start show draw pile
+            -after clicking, controller.userClickStart() -> asks controller to provide drawPile and send it back to gameView
+
+        Create a compartment for each player?!
+            - with beanfield (see addCompartment.beanField)
+            - show handcards
+            - maybe can have an arrange button, choose one type of arrange for all players
+        [Maybe later] Add something for user to input the number of players (now use the terminal)
+
+         */
+
+
         // create card objects for all supported card types
         // and display them distributed over the GUI
 
-        final int X_DIFF = 40;
-        final int Y_DIFF = 40;
-        final int X_ORIGIN = 305;
-        final int Y_ORIGIN = 5;
-        final int COLS = 11;
-        final int ROWS = 9;
+//        final int X_DIFF = 40;
+//        final int Y_DIFF = 40;
+//        final int X_ORIGIN = 305;
+//        final int Y_ORIGIN = 5;
+//        final int COLS = 11;
+//        final int ROWS = 9;
+//
+//        int x = X_ORIGIN;
+//        int y = Y_ORIGIN;
+//        for (CardType cardType : CardType.values()) {
+//            gui.addCard(cardType, new Coordinate(x, y)).flip();
+//
+//            x += X_DIFF;
+//            if (x > X_ORIGIN + X_DIFF * ROWS) {
+//                x = X_ORIGIN;
+//                y += Y_DIFF;
+//            }
+//            if (y > Y_ORIGIN + Y_DIFF * COLS) {
+//                y = Y_ORIGIN;
+//                x = X_ORIGIN;
+//            }
+//        }
 
-        int x = X_ORIGIN;
-        int y = Y_ORIGIN;
-        for (CardType cardType : CardType.values()) {
-            gui.addCard(cardType, new Coordinate(x, y)).flip();
-
-            x += X_DIFF;
-            if (x > X_ORIGIN + X_DIFF * ROWS) {
-                x = X_ORIGIN;
-                y += Y_DIFF;
-            }
-            if (y > Y_ORIGIN + Y_DIFF * COLS) {
-                y = Y_ORIGIN;
-                x = X_ORIGIN;
-            }
-        }
 
         // create compartments that are used to demo the convenience functions
         // for aligning cards within compartments
@@ -80,15 +103,15 @@ public class GameView implements Runnable {
 
         // a label that will be used to show information on a dragged'n'dropped card
         final Label label = gui.addLabel(new Coordinate(10, 100), "<none>");
-
-        // a demo of a compartment with empty background
-        gui.addCompartment(new Coordinate(1, 1), new Size(140, 140), "Handkarten");
-
-        // a demo of a compartment with an image as background
-        gui.addCompartment(new Coordinate(1, 200), new Size(300, 200), "Bohnenfelder", "BOHNENFELD_ALLE");
+//
+//        // a demo of a compartment with empty background
+//        gui.addCompartment(new Coordinate(1, 1), new Size(140, 140), "Handkarten");
+//
+//        // a demo of a compartment with an image as background
+//        gui.addCompartment(new Coordinate(1, 200), new Size(300, 200), "Bohnenfelder", "BOHNENFELD_ALLE");
 
         // a button to explicitly terminate the demo. This closes the window.
-        gui.addButton("exit", new Coordinate(100, 200), new Size(80, 25), button -> {
+        gui.addButton("exit", new Coordinate(620, 200), new Size(80, 25), button -> {
             gui.stop();
         });
 
@@ -135,6 +158,58 @@ public class GameView implements Runnable {
 
     public void updatePlayerInfo(String info) {
         playerInfoLabel.updateLabel(info);
+    }
+
+    int playerX = 1;
+    int playerY = 1;
+    int diff = 150;
+    public void updateInitialView(List<Card> drawPile, List<Player> players){
+        final int X_ORIGIN = 600;
+        final int Y_ORIGIN = 5;
+
+        int x = X_ORIGIN;
+        int y = Y_ORIGIN;
+        for (Card card : drawPile) {
+            gui.addCard(card.getCardType(), new Coordinate(x, y)).flip();
+        }
+
+        int i = 0;
+        int player_tmpX = playerX;
+        for(Player player: players){
+            gui.addCompartment(new Coordinate(player_tmpX, playerY), new Size(140, 140), "Player " + i);
+            // Only found image for with 3 bean fields
+            gui.addCompartment(new Coordinate(player_tmpX, playerY + 200), new Size(140, 70), "", "BOHNENFELD_ALLE");
+            updatePlayerHandCard(player, i);
+
+            i++;
+            player_tmpX = player_tmpX + diff;
+
+        }
+    }
+    public void updatePlayerHandCard(Player player, int playerId){
+
+        final int X_DIFF = 20;
+        final int Y_DIFF = 20;
+        final int X_ORIGIN = playerX;
+        final int Y_ORIGIN = playerY;
+        final int COLS = 3;
+        final int ROWS = 3;
+
+        int x = playerX;
+        int y = playerY;
+        for (Card card : player.getHandCards()) {
+            gui.addCard(card.getCardType(), new Coordinate(x + diff * playerId, y)).flip();
+
+            x += X_DIFF;
+            if (x > X_ORIGIN + X_DIFF * ROWS) {
+                x = X_ORIGIN;
+                y += Y_DIFF;
+            }
+            if (y > Y_ORIGIN + Y_DIFF * COLS) {
+                y = Y_ORIGIN;
+                x = X_ORIGIN;
+            }
+        }
     }
 
     public void update() {

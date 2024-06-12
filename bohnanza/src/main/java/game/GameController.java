@@ -1,8 +1,10 @@
 package game;
 
+import card.Card;
 import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import player.Player;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class GameController {
@@ -52,6 +54,13 @@ public class GameController {
     public void userActionCompleted() {
         // Notify the game that the user action is completed
         game.userActionCompleted();
+    }
+
+    public void userClickStart() {
+        gameView.updateInitialView(game.getDeck().getDrawPile(), game.getPlayers());
+    }
+    public void userUpdateHandCard(Player player, int playerId) {
+        gameView.updatePlayerHandCard(player, playerId);
     }
 
     public void updateGUI(){

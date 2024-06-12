@@ -65,6 +65,7 @@ public class Game {
 
             //draw 5 cards for each player
             player.addToHand(deck.drawN(5));
+//            gameController.userUpdateHandCard(player);
 
             //set number of beanfields
             player.getBeanField().setNumberOfFields(numberOfBeanfields);

@@ -1,6 +1,9 @@
 package card;
 
 public class BlueBean extends Card {
+    public BlueBean() {
+        super(CardType.BLAUE_BOHNE);
+    }
 
     @Override
     public int getHarvestRevenue(int nCardsHarvested) {

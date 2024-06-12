@@ -1,6 +1,9 @@
 package card;
 
 public class RedBean extends Card {
+    public RedBean() {
+        super(CardType.ROTE_BOHNE);
+    }
 
     @Override
     public int getHarvestRevenue(int nCardsHarvested) {

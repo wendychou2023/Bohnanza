@@ -1,6 +1,9 @@
 package card;
 
 public class GreenBean extends Card {
+    public GreenBean() {
+        super(CardType.BRECH_BOHNE);
+    }
 
     @Override
     public int getHarvestRevenue(int nCardsHarvested) {

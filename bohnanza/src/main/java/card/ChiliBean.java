@@ -1,6 +1,9 @@
 package card;
 
 public class ChiliBean extends Card {
+    public ChiliBean() {
+        super(CardType.FEUER_BOHNE);
+    }
 
     @Override
     public int getHarvestRevenue(int nCardsHarvested) {

@@ -1,6 +1,9 @@
 package card;
 
 public class GardenBean extends Card {
+    public GardenBean() {
+        super(CardType.GARTEN_BOHNE);
+    }
 
     @Override
     public int getHarvestRevenue(int nCardsHarvested) {

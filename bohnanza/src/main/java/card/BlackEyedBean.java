@@ -1,6 +1,9 @@
 package card;
 
 public class BlackEyedBean extends Card {
+    public BlackEyedBean() {
+        super(CardType.AUGEN_BOHNE);
+    }
 
     @Override
     public int getHarvestRevenue(int nCardsHarvested) {

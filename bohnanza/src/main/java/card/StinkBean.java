@@ -1,6 +1,9 @@
 package card;
 
 public class StinkBean extends Card {
+    public StinkBean() {
+        super(CardType.SAU_BOHNE);
+    }
 
     @Override
     public int getHarvestRevenue(int nCardsHarvested) {

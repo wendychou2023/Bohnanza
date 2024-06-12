@@ -1,5 +1,7 @@
 package card;
 
+import io.bitbucket.plt.sdp.bohnanza.gui.CardType;
+
 public class ChiliBean extends Card {
     public ChiliBean() {
         super(CardType.FEUER_BOHNE);

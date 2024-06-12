@@ -1,5 +1,7 @@
 package card;
 
+import io.bitbucket.plt.sdp.bohnanza.gui.CardType;
+
 public class BlackEyedBean extends Card {
     public BlackEyedBean() {
         super(CardType.AUGEN_BOHNE);

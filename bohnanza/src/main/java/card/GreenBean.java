@@ -1,5 +1,7 @@
 package card;
 
+import io.bitbucket.plt.sdp.bohnanza.gui.CardType;
+
 public class GreenBean extends Card {
     public GreenBean() {
         super(CardType.BRECH_BOHNE);

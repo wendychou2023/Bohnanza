@@ -1,5 +1,7 @@
 package card;
 
+import io.bitbucket.plt.sdp.bohnanza.gui.CardType;
+
 public class BlueBean extends Card {
     public BlueBean() {
         super(CardType.BLAUE_BOHNE);

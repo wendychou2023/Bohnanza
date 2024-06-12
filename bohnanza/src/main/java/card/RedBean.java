@@ -1,5 +1,7 @@
 package card;
 
+import io.bitbucket.plt.sdp.bohnanza.gui.CardType;
+
 public class RedBean extends Card {
     public RedBean() {
         super(CardType.ROTE_BOHNE);

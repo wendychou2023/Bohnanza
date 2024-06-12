@@ -1,5 +1,7 @@
 package card;
 
+import io.bitbucket.plt.sdp.bohnanza.gui.CardType;
+
 public class GardenBean extends Card {
     public GardenBean() {
         super(CardType.GARTEN_BOHNE);

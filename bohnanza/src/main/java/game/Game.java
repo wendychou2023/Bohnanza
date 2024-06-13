@@ -58,14 +58,14 @@ public class Game {
         return currentRound;
     }
 
-    private void setupPlayers() {
+    void setupPlayers() {
         //give each player 5 cards
         int numberOfBeanfields = players.size() == 3 ? 3 : 2;
         for (Player player : players) {
 
             //draw 5 cards for each player
             player.addToHand(deck.drawN(5));
-//            gameController.userUpdateHandCard(player);
+        //            gameController.userUpdateHandCard(player);
 
             //set number of beanfields
             player.getBeanField().setNumberOfFields(numberOfBeanfields);

@@ -13,7 +13,7 @@ public class GameController {
     private GameView gameView;
     private GUI gui;
 
-    private Scanner scanner;
+    Scanner scanner;
 
     public GameController(Game game, GameView gameView, GUI gui) {
         this.game = game;

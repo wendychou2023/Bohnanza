@@ -1,6 +1,8 @@
 package player.phase;
 
 import card.Card;
+import player.BeanField;
+import player.PlantingSpot;
 import player.Player;
 
 public class PlantingPhase implements Phase {
@@ -14,13 +16,28 @@ public class PlantingPhase implements Phase {
 
         // plant first card from hand
         Card card = player.popFromHand();
-        if (player.getBeanField().canPlant(card)) {
-            player.getBeanField().plant(card);
-        } else {
-            //ToDo: UI Request: which field to harvest?
-            player.getBeanField().harvest(player.getBeanField().getHarvestableBeans().get(0));
-            player.getBeanField().plant(card);
+        boolean cardPlanted = false;
+        BeanField beanField = player.getBeanField();
+
+
+        //ToDo: UI Request: let player choose where to plant the card
+        // and here just check if chosen spot is valid
+        for (int i = 0; i < beanField.getNumberOfFields(); i++) {
+            if (beanField.canPlant(i, card)) {
+                beanField.plant(i, card);
+                cardPlanted = true;
+                break;
+            }
         }
+        if (!cardPlanted) {
+            for (int i = 0; i < beanField.getNumberOfFields(); i++) {
+                if (beanField.canHarvest(i)) {
+                    beanField.harvest(i);
+                    beanField.plant(i, card);
+                }
+            }
+        }
+
 
         //ToDo: UI Request: Plant second card?
     }

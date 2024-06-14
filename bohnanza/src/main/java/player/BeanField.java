@@ -8,110 +8,100 @@ import java.util.stream.Collectors;
 
 public class BeanField {
     private final Player player;
-    private final Map<Card, Integer> beans = new HashMap<>();
-    private int numberOfFields = 2; //a default value
+    private final List<PlantingSpot> plantingSpots = new ArrayList<>();
 
     protected BeanField(Player player) {
         this.player = player;
     }
 
+    /**
+     * returns if there is any field that can the card can be planted in
+     */
     public boolean canPlant(Card card) {
-        if (beans.containsKey(card)) {
-            return true;
-        }
+        return plantingSpots.stream().anyMatch(spot -> spot.canPlant(card));
+    }
 
-        return beans.size() < numberOfFields;
+    /**
+     * returns if a card can be planted in field at index plantingSpotIdx
+     */
+    public boolean canPlant(int plantingSpotIdx, Card card) {
+        return plantingSpots.get(plantingSpotIdx).canPlant(card);
     }
 
     /**
      * plant a bean in a field
      * @param card to plant
-     * @throws NotEnoughBeanFieldException if there is no field to plant the card
+     * @param plantingSpotIdx index of the field to plant the card
+     * @throws RuntimeException if there is no field to plant the card
      * see canPlant()
      */
-    public void plant(Card card) {
-        if (!canPlant(card)) {
-            throw new NotEnoughBeanFieldException();
+    public void plant(int plantingSpotIdx, Card card) {
+        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);
+        if (!spot.canPlant(card)) {
+            throw new RuntimeException("can not plant card in field");
         }
-
-        if (beans.containsKey(card)) {
-            beans.put(card, beans.get(card) + 1);
-        } else {
-            beans.put(card, 1);
-        }
+        spot.plant(card);
     }
 
-    public int getNumberOfFields(){return numberOfFields;}
+    public int getNumberOfFields(){return plantingSpots.size();}
 
-    public void setNumberOfFields(int numOfFields){
-        if (numOfFields > 3) {
-            throw new RuntimeException("can not buy more than 3 fields");
+    public void addBeanfields(int numOfFields){
+        for (int i = 0; i < numOfFields; i++) {
+            plantingSpots.add(new PlantingSpot());
         }
-        this.numberOfFields = numOfFields;
     }
 
     /**
      * harvest a field and add coins to player
-     * @param card beantype to harvest
+     * @param plantingSpotIdx index of the field to harvest
      */
-    public void harvest(Card card) {
-        if (!canHarvest(card)) {
-            System.out.println("current beans: " + beans);
-            throw new RuntimeException("can not harvest bean  of type: " + card);
+    public void harvest(int plantingSpotIdx) {
+        if (canHarvest(plantingSpotIdx)) {
+            throw new RuntimeException("can not harvest bean  of type: ");
         }
 
-        uncheckedHarvest(card);
+        uncheckedHarvest(plantingSpotIdx);
     }
 
     /**
      * harvest a field and add coins to player without checking if it can be harvested
-     * @param card to harvest
+     * @param plantingSpotIdx index of the field to harvest
      */
-    private void uncheckedHarvest(Card card) {
-        int cardCount = beans.get(card);
+    private void uncheckedHarvest(int plantingSpotIdx) {
+        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);
+        int cardCount = spot.getNumberOfBeans();
+        Card card = spot.getPlantedCard();
         int coins = card.getHarvestRevenue(cardCount);
 
-        beans.remove(card); // remove from field
         // discard n cards (n = cardCount - coins as beancoins stay with player and are not discarded)
         Game.getInstance().getDeck().discardN(card, cardCount - coins);
         player.addCoins(coins);
+
+        spot.clear();
     }
 
     /**
-     * check if a bean can be harvested
-     * bean can not be harvested if
-     * 1. the field contains only one bean and another field contains more than one bean
-     * 2. there is no field with that bean
-     * @param card beantype
+     * check if a field can be harvested
      */
-    public boolean canHarvest(Card card) {
-        if (!beans.containsKey(card)) {
-            return false;
-        }
+    public boolean canHarvest(int plantingSpotIdx) {
+        int n = plantingSpots.get(plantingSpotIdx).getNumberOfBeans();
 
-        if (beans.get(card) == 1) {
-            for (int val : beans.values()) {
-                if (val > 1) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
+        // Bean Protection Act
+        return ! (n == 1 && plantingSpots.stream().anyMatch(spot -> spot.getNumberOfBeans() > 1));
     }
 
-    public List<Card> getHarvestableBeans() {
-        List<Card> output = new LinkedList<>();
-        for (Card card : beans.keySet()) {
-            if (canHarvest(card)) {
-                output.add(card);
-            }
-        }
-        return output;
+    public int getNumberOfBeansInField(int plantingSpotIdx) {
+        return plantingSpots.get(plantingSpotIdx).getNumberOfBeans();
     }
 
-    public int getNumberOfBeansInField(Card card) {
-        return beans.get(card);
+    /**
+     * get all planted beans
+     * empty fields are represented as card == null
+     */
+    public List<Card> getPlantedBeans() {
+        return plantingSpots.stream()
+                .map(PlantingSpot::getPlantedCard)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -119,8 +109,9 @@ public class BeanField {
      * used at the end of the game
      */
     public void harvestAll() {
-        // collects to list to avoid concurrent modification exception
-        new LinkedList<>(beans.keySet()).forEach(this::uncheckedHarvest);
+        for (int i = 0; i < getNumberOfFields(); i++) {
+            uncheckedHarvest(i);
+        }
     }
 
     public void buyExtraBeanField() {
@@ -129,7 +120,7 @@ public class BeanField {
         }
 
         // throws excepion if player already has 3 fields
-        setNumberOfFields(this.numberOfFields + 1);
+        addBeanfields(1);
 
         player.removeCoins(3);
     }
@@ -137,7 +128,7 @@ public class BeanField {
     @Override
     public String toString() {
         return "BeanField{" +
-                "beans=" + beans +
+                "beans=" + plantingSpots +
                 '}';
     }
 }

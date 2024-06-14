@@ -68,7 +68,7 @@ public class Game {
         //            gameController.userUpdateHandCard(player);
 
             //set number of beanfields
-            player.getBeanField().setNumberOfFields(numberOfBeanfields);
+            player.getBeanField().addBeanfields(numberOfBeanfields);
         }
     }
 

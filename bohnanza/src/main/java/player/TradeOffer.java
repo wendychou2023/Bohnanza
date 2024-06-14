@@ -33,8 +33,10 @@ public class TradeOffer {
         return cardsReceivedFromActive;
     }
 
-    public void accept() throws NotEnoughBeanFieldException {
+    public void accept() {
 
+/*
+        // needs to be adjusted to new beanField
         for (Card card : cardsOfferedToActive) {
             activePlayer.getBeanField().plant(card);
             inactivePlayer.getHandCards().remove(card);
@@ -43,5 +45,6 @@ public class TradeOffer {
             inactivePlayer.getBeanField().plant(card);
             activePlayer.getHandCards().remove(card);
         }
+*/
     }
 }

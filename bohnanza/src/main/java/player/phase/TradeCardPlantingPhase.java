@@ -13,21 +13,28 @@ public class TradeCardPlantingPhase implements Phase {
         //ToDo: UI Request: make each player plant traded cards
 
         // for now:
-        Game.getInstance().getPlayers().forEach(p -> {
-            for (Card card : p.getTradingArea()) {
-                BeanField field = p.getBeanField();
+        for (Player playerIter : Game.getInstance().getPlayers()) {
+            BeanField beanField = playerIter.getBeanField();
 
-                if (field.canPlant(card)) {
-                    field.plant(card);
+            for (Card card: playerIter.getTradingArea()) {
+                if (beanField.canPlant(card)) {
+                    for (int i = 0; i < beanField.getNumberOfFields(); i++) {
+                        if (beanField.canPlant(i, card)) {
+                            beanField.plant(i, card);
+                            break;
+                        }
+                    }
                 } else {
-                    // harvest first harvestable field if necessary
-                    // could be optimized
-                    field.harvest(field.getHarvestableBeans().get(0));
-                    field.plant(card);
+                    for (int i = 0; i < beanField.getNumberOfFields(); i++) {
+                        if (beanField.canHarvest(i)) {
+                            beanField.harvest(i);
+                            beanField.plant(i, card);
+                            break;
+                        }
+                    }
                 }
             }
-            p.getTradingArea().clear();
-        });
+        }
     }
 
     @Override

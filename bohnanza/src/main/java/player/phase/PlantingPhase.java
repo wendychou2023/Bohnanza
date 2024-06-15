@@ -25,6 +25,8 @@ public class PlantingPhase implements Phase {
         int selectedField = player.getGameController().requestUserPlantAction("Choose which field to plant first card: " + card.toString(), player);
         if (beanField.canPlant(selectedField, card)) {
             beanField.plant(selectedField, card);
+            player.getGameController().updatePlayerHandCard(player);
+            player.getGameController().updatePlayerBeanfield(player);
             cardPlanted = true;
         }
 

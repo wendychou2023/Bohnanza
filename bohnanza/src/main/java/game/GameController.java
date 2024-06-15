@@ -51,6 +51,8 @@ public class GameController {
 
     private void gameLoop() {
         while (game.isGameNotOver()) {
+            gameView.enableActivePlayerButton();
+
             Player activePlayer = game.getPlayers().get(game.getActivePlayerID());
             gameView.updatePlayerInfo("Active player: " + game.getActivePlayerID());
             waitForUserAction();
@@ -72,8 +74,8 @@ public class GameController {
 
     private void processPhase(Player activePlayer) {
         while (activePlayer.executeNextPhase()) {
-            waitForUserAction();
             updateGUIForPhase(activePlayer);
+            waitForUserAction();
         }
     }
 
@@ -130,6 +132,14 @@ public class GameController {
 
     public void requestUserHarvestAction(String message, List<Card> harvestableBean, Player player) {
         gameView.requestUserHarvestAction(message, harvestableBean, player);
+    }
+
+    public void updatePlayerBeanfield(Player player){
+        gameView.updatePlayerBeanfield(player, game.getActivePlayerID());
+    }
+
+    public void updatePlayerHandCard(Player player){
+        gameView.updatePlayerHandCard(player, game.getActivePlayerID());
     }
 
 //    public void harvestField(int fieldId, Player player){

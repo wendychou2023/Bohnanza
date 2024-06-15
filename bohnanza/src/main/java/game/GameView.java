@@ -68,6 +68,7 @@ public class GameView implements Runnable {
             gameController.userActionCompleted();
             gui.setButtonEnabled(activePlayerButton, false);
         });
+        gui.setButtonEnabled(activePlayerButton, false);
 
 //        gui.addButton("Switch to next player", new Coordinate(10, 350), new Size(200, 25), button -> {
 //            gameController.userActionCompleted();
@@ -107,9 +108,7 @@ public class GameView implements Runnable {
                         userRespondedtoRequest(requestLabel, buttons);
                         gameController.selectedPlantOption(finalI);
                         gameController.userActionCompleted();
-                        updatePlayerBeanfield(player, playerId);
-                        updatePlayerHandCard(player, playerId);
-                    });
+            });
         }
     }
 
@@ -158,6 +157,7 @@ public class GameView implements Runnable {
     public void updateInitialView(List<Card> drawPile, List<Player> players, int activePlayerId){
         // Disable the start button after start
         gui.setButtonEnabled(startButton, false);
+        gui.setButtonEnabled(activePlayerButton, true);
         label.updateLabel("");
 
         // Display draw pile
@@ -198,7 +198,7 @@ public class GameView implements Runnable {
             i++;
         }
     }
-    private void updatePlayerHandCard(Player player, int playerId){
+    public void updatePlayerHandCard(Player player, int playerId){
         final int X_DIFF = 20;
         final int Y_DIFF = 20;
         final int X_ORIGIN = WIDTH * playerId;
@@ -224,14 +224,24 @@ public class GameView implements Runnable {
         }
     }
 
-    private void updatePlayerBeanfield(Player player, int playerId){
+    public void updatePlayerBeanfield(Player player, int playerId){
         List<PlantingSpot> plantingSpots = player.getBeanField().getPlantingSpots();
+        int fieldId = -1;
         for (PlantingSpot spot : plantingSpots) {
+            fieldId++;
+            if (spot.getPlantedCard() == null){
+                continue;
+            }
             Card card = spot.getPlantedCard();
             Integer numOfCards = spot.getNumberOfBeans();
+            int finalFieldId = fieldId;
             IntStream.range(0, numOfCards).forEach(i -> {
-                gui.addCard(card.getCardType(), new Coordinate(WIDTH * playerId + 10 + 200*i, Y-HEIGHT/2 + 50)).flip();
+                gui.addCard(card.getCardType(), new Coordinate(WIDTH * playerId + 10 + 80 * finalFieldId, Y-HEIGHT/2 + 50)).flip();
             });
         }
+    }
+
+    public void enableActivePlayerButton(){
+        gui.setButtonEnabled(activePlayerButton, true);
     }
 }

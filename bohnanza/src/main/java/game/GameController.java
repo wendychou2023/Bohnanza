@@ -120,14 +120,25 @@ public class GameController {
     }
 
     private int selectedPlantOption;
-    public void selectedPlantOption(int option){
+    public void selectedOption(int option){
         selectedPlantOption = option;
+    }
+
+    private boolean selectedYesNoOption;
+    public void selectedOption(boolean option){
+        selectedYesNoOption = option;
     }
 
     public Integer requestUserPlantAction(String message, Player player) {
         gameView.requestUserPlantAction(message, player, game.getActivePlayerID());
         waitForUserAction();
         return selectedPlantOption;
+    }
+
+    public boolean requestUserYesOrNo(String message, Player player){
+        gameView.requestUserYesOrNo(message, player, game.getActivePlayerID());
+        waitForUserAction();
+        return selectedYesNoOption;
     }
 
     public void requestUserHarvestAction(String message, List<Card> harvestableBean, Player player) {

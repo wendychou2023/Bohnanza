@@ -95,21 +95,40 @@ public class GameView implements Runnable {
 
 
     int selectedOption;
+    Coordinate requestLabelCoordinate = new Coordinate(100, 400);
+    int requestButtonX = 100;
+    int requestButtonXDiff = 105;
+    int requestButtonY = 450;
     public void requestUserPlantAction(String message, Player player, int playerId){
-        Label requestLabel = gui.addLabel(new Coordinate(100, 400), message);
-        int x = 100;
-        int x_diff = 105;
+        Label requestLabel = gui.addLabel(requestLabelCoordinate, message);
         Button[] buttons = new Button[player.getBeanField().getNumberOfFields()];
         int bound = player.getBeanField().getNumberOfFields();
         for (int i = 0; i < bound; i++) {
             int finalI = i;
-            buttons[i] = gui.addButton("Field" + (i + 1), new Coordinate(x + x_diff * i, 500), BUTTON_SIZE,
+            buttons[i] = gui.addButton("Field" + (i + 1), new Coordinate(requestButtonX + requestButtonXDiff * i, requestButtonY), BUTTON_SIZE,
                     button -> {
                         userRespondedtoRequest(requestLabel, buttons);
-                        gameController.selectedPlantOption(finalI);
+                        gameController.selectedOption(finalI);
                         gameController.userActionCompleted();
             });
         }
+    }
+
+    public void requestUserYesOrNo(String message, Player player, int playerId){
+        Label requestLabel = gui.addLabel(requestLabelCoordinate, message);
+        Button[] yesNoButtons = new Button[2];
+        yesNoButtons[0] = gui.addButton("yes", new Coordinate(requestButtonX, requestButtonY), BUTTON_SIZE,
+                button -> {
+                    userRespondedtoRequest(requestLabel, yesNoButtons);
+                    gameController.selectedOption(true);
+                    gameController.userActionCompleted();
+                });
+        yesNoButtons[1] = gui.addButton("no", new Coordinate(requestButtonX + requestButtonXDiff, requestButtonY), BUTTON_SIZE,
+                button -> {
+                    userRespondedtoRequest(requestLabel, yesNoButtons);
+                    gameController.selectedOption(false);
+                    gameController.userActionCompleted();
+                });
     }
 
     public void requestUserHarvestAction(String message, List<Card> harvestableBeans, Player player) {
@@ -164,7 +183,6 @@ public class GameView implements Runnable {
         final int X_DRAW = 5;
         final int Y_DRAW = 400;
 
-        System.out.println("Prepare draw pile...");
         for (Card card : drawPile) {
             gui.addCard(card.getCardType(), new Coordinate(X_DRAW, Y_DRAW));
         }

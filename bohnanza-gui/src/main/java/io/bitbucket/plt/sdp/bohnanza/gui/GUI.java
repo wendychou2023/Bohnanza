@@ -397,6 +397,12 @@ public class GUI {
         return newLabel;
     }
 
+    public synchronized void removeLabel(Label label) {
+        labels.remove(label);
+        updateScrollMinSize();
+        redrawDisplay();
+    }
+
     /**
      * Create a new compartment object that is displayed by the GUI with an empty background. This method can be called from any thread.
      * The display is refreshed accordingly.
@@ -484,6 +490,22 @@ public class GUI {
             }
         });
         return newButton;
+    }
+
+    public void removeButton(Button button) {
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (GUI.this) {
+                    if (buttons.contains(button)) {
+                        button.swtButton.dispose();
+                        buttons.remove(button);
+                        updateScrollMinSize();
+                        redrawDisplay();
+                    }
+                }
+            }
+        });
     }
 
     /**

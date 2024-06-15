@@ -1,6 +1,7 @@
 package player;
 
 import card.Card;
+import game.GameController;
 import player.phase.Phase;
 import player.phase.PlantingPhase;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class Player {
     private Phase currentPhase = null;
+    private GameController gameController;
     private final List<Card> handCards;
     private final BeanField beanField;
     private final List<Card> tradingArea;
@@ -30,6 +32,19 @@ public class Player {
     public List<Card> getTradingArea() {
         return tradingArea;
     }
+
+    public Phase getCurrentPhase(){
+        return currentPhase;
+    }
+
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
+
+    public GameController getGameController() {
+        return gameController;
+    }
+
 
     public int getCoins() {
         return coins;
@@ -62,11 +77,15 @@ public class Player {
         if (currentPhase == null) {
             currentPhase = new PlantingPhase();
         }
+    }
 
-        while (currentPhase != null) {
+    public boolean executeNextPhase() {
+        if (currentPhase != null) {
             currentPhase.doPhase(this);
             currentPhase = currentPhase.getNextPhase();
+            return currentPhase != null;
         }
+        return false;
     }
 
     public TradeOffer makeOffer(Player activePlayer, Collection<Card> activePlayerCards) {

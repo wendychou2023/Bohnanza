@@ -22,13 +22,19 @@ public class PlantingPhase implements Phase {
 
         //ToDo: UI Request: let player choose where to plant the card
         // and here just check if chosen spot is valid
-        for (int i = 0; i < beanField.getNumberOfFields(); i++) {
+        int selectedField = player.getGameController().requestUserPlantAction("Choose which field to plant first card: " + card.toString(), player);
+        if (beanField.canPlant(selectedField, card)) {
+            beanField.plant(selectedField, card);
+            cardPlanted = true;
+        }
+
+        /*for (int i = 0; i < beanField.getNumberOfFields(); i++) {
             if (beanField.canPlant(i, card)) {
                 beanField.plant(i, card);
                 cardPlanted = true;
                 break;
             }
-        }
+        }*/
         if (!cardPlanted) {
             for (int i = 0; i < beanField.getNumberOfFields(); i++) {
                 if (beanField.canHarvest(i)) {

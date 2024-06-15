@@ -2,9 +2,12 @@ package game;
 
 import card.Card;
 import io.bitbucket.plt.sdp.bohnanza.gui.*;
+import player.PlantingSpot;
 import player.Player;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class GameView implements Runnable {
     private GameController gameController;
@@ -13,6 +16,9 @@ public class GameView implements Runnable {
     private final String[] args;
     private Label gameInfoLabel; // Label to display game information
     private Label playerInfoLabel; // Label to display player information
+    private Label label;
+    private Button startButton;
+    private Button activePlayerButton;
 
     public GameView(GUI gui, String[] args) {
         super();
@@ -30,88 +36,16 @@ public class GameView implements Runnable {
     }
 
     private void setupGUI(){
-        gui.addButton("start", new Coordinate(620, 150), new Size(80, 25), button -> {
+        startButton = gui.addButton("start", new Coordinate(10, 100), BUTTON_SIZE, button -> {
             gameController.userClickStart();
+            gameController.userActionCompleted();
         });
 
-        /*
-        Some idea:
-        Add a start game button -> after clicking start show draw pile
-            -after clicking, controller.userClickStart() -> asks controller to provide drawPile and send it back to gameView
+        label = gui.addLabel(new Coordinate(10, 50), "<none>");
+        label.updateLabel("Click start to start the game.");
 
-        Create a compartment for each player?!
-            - with beanfield (see addCompartment.beanField)
-            - show handcards
-            - maybe can have an arrange button, choose one type of arrange for all players
-        [Maybe later] Add something for user to input the number of players (now use the terminal)
-
-         */
-
-
-        // create card objects for all supported card types
-        // and display them distributed over the GUI
-
-//        final int X_DIFF = 40;
-//        final int Y_DIFF = 40;
-//        final int X_ORIGIN = 305;
-//        final int Y_ORIGIN = 5;
-//        final int COLS = 11;
-//        final int ROWS = 9;
-//
-//        int x = X_ORIGIN;
-//        int y = Y_ORIGIN;
-//        for (CardType cardType : CardType.values()) {
-//            gui.addCard(cardType, new Coordinate(x, y)).flip();
-//
-//            x += X_DIFF;
-//            if (x > X_ORIGIN + X_DIFF * ROWS) {
-//                x = X_ORIGIN;
-//                y += Y_DIFF;
-//            }
-//            if (y > Y_ORIGIN + Y_DIFF * COLS) {
-//                y = Y_ORIGIN;
-//                x = X_ORIGIN;
-//            }
-//        }
-
-
-        // create compartments that are used to demo the convenience functions
-        // for aligning cards within compartments
-
-        Compartment vDistCompartment = setupDemoCompartment(0, "vert. distr.");
-        setupDemoCompartmentButton(0, button -> {
-            vDistCompartment.distributeVertical(gui.getCardObjectsInCompartment(vDistCompartment));
-        });
-
-
-        Compartment hDistCompartment = setupDemoCompartment(1, "hor. distr.");
-        setupDemoCompartmentButton(1, button -> {
-            hDistCompartment.distributeHorizontal(gui.getCardObjectsInCompartment(vDistCompartment));
-        });
-
-
-        Compartment vCentCompartment = setupDemoCompartment(2, "vert. center");
-        setupDemoCompartmentButton(2, button -> {
-            vCentCompartment.centerVertical(gui.getCardObjectsInCompartment(vCentCompartment));
-        });
-
-
-        Compartment hCentCompartment = setupDemoCompartment(3, "hor. center");
-        setupDemoCompartmentButton(3, button -> {
-            hCentCompartment.centerHorizontal(gui.getCardObjectsInCompartment(hCentCompartment));
-        });
-
-        // a label that will be used to show information on a dragged'n'dropped card
-        final Label label = gui.addLabel(new Coordinate(10, 100), "<none>");
-//
-//        // a demo of a compartment with empty background
-//        gui.addCompartment(new Coordinate(1, 1), new Size(140, 140), "Handkarten");
-//
-//        // a demo of a compartment with an image as background
-//        gui.addCompartment(new Coordinate(1, 200), new Size(300, 200), "Bohnenfelder", "BOHNENFELD_ALLE");
-
-        // a button to explicitly terminate the demo. This closes the window.
-        gui.addButton("exit", new Coordinate(620, 200), new Size(80, 25), button -> {
+        // a button to explicitly terminate the game. This closes the window.
+        gui.addButton("exit", new Coordinate(200, 100), BUTTON_SIZE, button -> {
             gui.stop();
         });
 
@@ -120,20 +54,24 @@ public class GameView implements Runnable {
         // - information on the dropped card is shown in the dedicated label
         // - the card is moved to the front, i.e., displayed top-most
         gui.setCardDnDHandler((CardObject card, Coordinate mouseCoordinate, Coordinate newCoordinate) -> {
-            card.flip();
+//            card.flip();
             label.updateLabel(card.toString());
             gui.moveToTop(card);
             return newCoordinate;
         });
 
         // Initialize labels for displaying information
-        gameInfoLabel = gui.addLabel(new Coordinate(100, 500), "Game Information");
-        playerInfoLabel = gui.addLabel(new Coordinate(100, 600), "Player Information");
+        gameInfoLabel = gui.addLabel(new Coordinate(10, 150), "Game Information");
+        playerInfoLabel = gui.addLabel(new Coordinate(10, 250), "Player Information");
 
-        // Add "Next" button
-        gui.addButton("Next", new Coordinate(100, 650), new Size(200, 50), button -> {
-            gameController.userActionCompleted(); // Notify the controller
+        activePlayerButton = gui.addButton("Active player takes turn", new Coordinate(10, 300), new Size(200, 25), button -> {
+            gameController.userActionCompleted();
+            gui.setButtonEnabled(activePlayerButton, false);
         });
+
+//        gui.addButton("Switch to next player", new Coordinate(10, 350), new Size(200, 25), button -> {
+//            gameController.userActionCompleted();
+//        });
 
     }
 
@@ -143,14 +81,8 @@ public class GameView implements Runnable {
     final int V_SPACING = 5;
     final int H_SPACING = 5;
     final Size BUTTON_SIZE = new Size(100, 25);
-
-    private Compartment setupDemoCompartment(int pos, String label) {
-        return gui.addCompartment(new Coordinate(WIDTH * pos, Y), new Size(WIDTH, HEIGHT), label);
-    }
-
-    private Button setupDemoCompartmentButton(int pos, ButtonHandler handler) {
-        return gui.addButton("arrange", new Coordinate(WIDTH * (pos + 1) - BUTTON_SIZE.width - H_SPACING, Y + V_SPACING), BUTTON_SIZE, handler);
-    }
+    Compartment[] playerCompartments;
+    Compartment[] playerBeanfield;
 
     public void updateGameInfo(String info) {
         gameInfoLabel.updateLabel(info);
@@ -160,45 +92,125 @@ public class GameView implements Runnable {
         playerInfoLabel.updateLabel(info);
     }
 
-    int playerX = 1;
-    int playerY = 1;
-    int diff = 150;
-    public void updateInitialView(List<Card> drawPile, List<Player> players){
-        final int X_ORIGIN = 600;
-        final int Y_ORIGIN = 5;
 
-        int x = X_ORIGIN;
-        int y = Y_ORIGIN;
+    int selectedOption;
+    public void requestUserPlantAction(String message, Player player, int playerId){
+        Label requestLabel = gui.addLabel(new Coordinate(100, 400), message);
+        int x = 100;
+        int x_diff = 105;
+        Button[] buttons = new Button[player.getBeanField().getNumberOfFields()];
+        int bound = player.getBeanField().getNumberOfFields();
+        for (int i = 0; i < bound; i++) {
+            int finalI = i;
+            buttons[i] = gui.addButton("Field" + (i + 1), new Coordinate(x + x_diff * i, 500), BUTTON_SIZE,
+                    button -> {
+                        userRespondedtoRequest(requestLabel, buttons);
+                        gameController.selectedPlantOption(finalI);
+                        gameController.userActionCompleted();
+                        updatePlayerBeanfield(player, playerId);
+                        updatePlayerHandCard(player, playerId);
+                    });
+        }
+    }
+
+    public void requestUserHarvestAction(String message, List<Card> harvestableBeans, Player player) {
+        // Display a dialog or some UI element to ask the user for input
+        Label requestLabel = gui.addLabel(new Coordinate(100, 400), message);
+        int x = 100;
+        int x_diff = 105;
+        Button[] buttons = new Button[harvestableBeans.size()];
+        int i = 0;
+        for(Card bean: harvestableBeans) {
+            int finalI = i;
+            buttons[i] = gui.addButton(bean.toString(), new Coordinate(x + x_diff * i, 500), BUTTON_SIZE,
+                    button -> {
+//                        gameController.harvestField(finalI, player);
+                        userRespondedtoRequest(requestLabel, buttons);
+                    });
+            i++;
+        }
+    }
+
+    private void userRespondedtoRequest(Label requestLabel, Button[] buttons){
+        gui.removeLabel(requestLabel);
+        for(Button button: buttons){
+            gui.removeButton(button);
+        }
+    }
+
+    private void userRespondedtoRequest(Label requestLabel, Button button){
+        gui.removeLabel(requestLabel);
+        gui.removeButton(button);
+    }
+
+    private Compartment setupPlayerCompartment(int player, String label) {
+        return gui.addCompartment(new Coordinate(WIDTH * player, Y), new Size(WIDTH, HEIGHT), label);
+    }
+
+    private Button setupPlayerCompartmentButton(int pos, ButtonHandler handler) {
+        return gui.addButton("flip", new Coordinate(WIDTH * (pos + 1) - BUTTON_SIZE.width - H_SPACING, Y + V_SPACING), BUTTON_SIZE, handler);
+    }
+
+    private Compartment setupPlayerBeanfield(int player, String label) {
+        return gui.addCompartment(new Coordinate(WIDTH * player, Y-HEIGHT/2), new Size(WIDTH, HEIGHT/2), label, "BOHNENFELD_ALLE");
+    }
+
+    public void updateInitialView(List<Card> drawPile, List<Player> players, int activePlayerId){
+        // Disable the start button after start
+        gui.setButtonEnabled(startButton, false);
+        label.updateLabel("");
+
+        // Display draw pile
+        final int X_DRAW = 5;
+        final int Y_DRAW = 400;
+
+        System.out.println("Prepare draw pile...");
         for (Card card : drawPile) {
-            gui.addCard(card.getCardType(), new Coordinate(x, y)).flip();
+            gui.addCard(card.getCardType(), new Coordinate(X_DRAW, Y_DRAW));
         }
 
+        // Display player compartments
         int i = 0;
-        int player_tmpX = playerX;
+        playerCompartments = new Compartment[players.size()];
+        playerBeanfield = new Compartment[players.size()];
+
         for(Player player: players){
-            gui.addCompartment(new Coordinate(player_tmpX, playerY), new Size(140, 140), "Player " + i);
+            playerCompartments[i] = setupPlayerCompartment(i, "Player " + i);
+            int finalI = i;
+            // Add a flip button in each player compartment
+            setupPlayerCompartmentButton(i, button -> {
+                // Retrieve the array of CardObject from the compartment
+                CardObject[] cardObjects = gui.getCardObjectsInCompartment(playerCompartments[finalI]);
+
+                // Check if cardObjects is not null to avoid NullPointerException
+                if (cardObjects != null) {
+                    // Use Arrays.stream() to iterate and flip each card
+                    Arrays.stream(cardObjects).forEach(CardObject::flip);
+                }
+            });
+
+
             // Only found image for with 3 bean fields
-            gui.addCompartment(new Coordinate(player_tmpX, playerY + 200), new Size(140, 70), "", "BOHNENFELD_ALLE");
+            playerBeanfield[i] = setupPlayerBeanfield(i, "");
+
             updatePlayerHandCard(player, i);
 
             i++;
-            player_tmpX = player_tmpX + diff;
-
         }
     }
-    public void updatePlayerHandCard(Player player, int playerId){
-
+    private void updatePlayerHandCard(Player player, int playerId){
         final int X_DIFF = 20;
         final int Y_DIFF = 20;
-        final int X_ORIGIN = playerX;
-        final int Y_ORIGIN = playerY;
-        final int COLS = 3;
-        final int ROWS = 3;
+        final int X_ORIGIN = WIDTH * playerId;
+        final int Y_ORIGIN = Y;
+        final int COLS = 10;
+        final int ROWS = 5;
 
-        int x = playerX;
-        int y = playerY;
+        int x = WIDTH * playerId;
+        int y = Y;
         for (Card card : player.getHandCards()) {
-            gui.addCard(card.getCardType(), new Coordinate(x + diff * playerId, y)).flip();
+            // Bean side facing up
+            gui.addCard(card.getCardType(), new Coordinate(x + H_SPACING + BUTTON_SIZE.height, y-V_SPACING + BUTTON_SIZE.width));
 
             x += X_DIFF;
             if (x > X_ORIGIN + X_DIFF * ROWS) {
@@ -212,8 +224,14 @@ public class GameView implements Runnable {
         }
     }
 
-    public void update() {
-        // Implement logic to update the GUI based on the current game state
+    private void updatePlayerBeanfield(Player player, int playerId){
+        List<PlantingSpot> plantingSpots = player.getBeanField().getPlantingSpots();
+        for (PlantingSpot spot : plantingSpots) {
+            Card card = spot.getPlantedCard();
+            Integer numOfCards = spot.getNumberOfBeans();
+            IntStream.range(0, numOfCards).forEach(i -> {
+                gui.addCard(card.getCardType(), new Coordinate(WIDTH * playerId + 10 + 200*i, Y-HEIGHT/2 + 50)).flip();
+            });
+        }
     }
-
 }

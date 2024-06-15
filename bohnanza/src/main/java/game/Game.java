@@ -14,7 +14,7 @@ public class Game {
     private final List<Player> players;
     private final Deck deck;
 
-    private int activePlayerID;
+    private int activePlayerID = 0;
     private int currentRound = 0;
     private boolean roundEnded = false; //flag to check if the round has ended
 
@@ -65,14 +65,14 @@ public class Game {
 
             //draw 5 cards for each player
             player.addToHand(deck.drawN(5));
-        //            gameController.userUpdateHandCard(player);
+            player.setGameController(gameController);
 
             //set number of beanfields
             player.getBeanField().addBeanfields(numberOfBeanfields);
         }
     }
 
-    private void nextPlayer(){
+    protected void nextPlayer(){
         activePlayerID = (activePlayerID  + 1)%players.size();
     }
 
@@ -88,6 +88,7 @@ public class Game {
         roundEnded = true;
     }
 
+    /*  Move game loop to GameController
     public void startGame() {
         this.activePlayerID = 0;
 
@@ -136,7 +137,7 @@ public class Game {
         gameController.updateGameInfo(endGameInfo);
         endGame();
 
-    }
+    }*/
 
     /**
      * end the game and calculate the winner
@@ -163,8 +164,16 @@ public class Game {
         );
     }
 
-    private  boolean waitingForUserAction = true;
-    public void userActionCompleted() {
-        waitingForUserAction = false;
+    public boolean isRoundEnded() {
+        return roundEnded;
     }
+
+    public void resetRoundEnded() {
+        roundEnded = false;
+    }
+
+    public boolean isGameNotOver() {
+        return currentRound < MAX_ROUNDS;
+    }
+
 }

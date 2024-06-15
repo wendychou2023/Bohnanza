@@ -43,6 +43,10 @@ public class BeanField {
         spot.plant(card);
     }
 
+    public List<PlantingSpot> getPlantingSpots(){
+        return plantingSpots;
+    }
+
     public int getNumberOfFields(){return plantingSpots.size();}
 
     public void addBeanfields(int numOfFields){

@@ -60,7 +60,7 @@ public class BeanField {
      * @param plantingSpotIdx index of the field to harvest
      */
     public void harvest(int plantingSpotIdx) {
-        if (canHarvest(plantingSpotIdx)) {
+        if (!canHarvest(plantingSpotIdx)) {
             throw new RuntimeException("can not harvest bean  of type: ");
         }
 
@@ -86,12 +86,23 @@ public class BeanField {
 
     /**
      * check if a field can be harvested
+     * returns false if field is empty
      */
     public boolean canHarvest(int plantingSpotIdx) {
-        int n = plantingSpots.get(plantingSpotIdx).getNumberOfBeans();
+        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);
+
+        // can not harvest empty field
+        if (spot.isEmpty()) {
+            return false;
+        }
 
         // Bean Protection Act
-        return ! (n == 1 && plantingSpots.stream().anyMatch(spot -> spot.getNumberOfBeans() > 1));
+        int n = spot.getNumberOfBeans();
+        if (n == 1) {
+            return !plantingSpots.stream().anyMatch(s -> s.getNumberOfBeans() > 1);
+        }
+
+        return true;
     }
 
     public int getNumberOfBeansInField(int plantingSpotIdx) {
@@ -106,6 +117,10 @@ public class BeanField {
         return plantingSpots.stream()
                 .map(PlantingSpot::getPlantedCard)
                 .collect(Collectors.toList());
+    }
+
+    public boolean isEmpty(int plantingSpotIdx) {
+        return plantingSpots.get(plantingSpotIdx).isEmpty();
     }
 
     /**

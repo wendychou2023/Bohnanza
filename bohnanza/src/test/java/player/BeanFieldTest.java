@@ -18,58 +18,57 @@ public class BeanFieldTest {
     void setUp() {
         player = new Player();
         beanField = player.getBeanField();
+        beanField.addBeanfields(2);
     }
 
     @Test
     // Attempting to harvest unplanted bean
     void testHarvestUnplantedBean() {
-        assertThrows(RuntimeException.class, () -> beanField.harvest(new ChiliBean()));
+        assertThrows(RuntimeException.class, () -> beanField.harvest(0));
     }
 
     @Test
     // Planting a bean with enough bean fields available
     void testPlantWithEnoughBeanFields() {
-        assertDoesNotThrow(() -> {
-            beanField.plant(new ChiliBean());
-        });
+        beanField.plant(0, new BlueBean());
+        assertEquals(1, beanField.getNumberOfBeansInField(0));
+        assertEquals(new BlueBean(), beanField.getPlantedBeans().get(0));
     }
 
     @Test
     // Plant multiple beans of the same type and harvest them
-    void testMultipleHarvestBeans() throws NotEnoughBeanFieldException {
+    void testMultipleHarvestBeans() {
         int n = 6;
         for (int i = 0; i < n; i++) {
-            beanField.plant(new ChiliBean());
+            beanField.plant(0, new ChiliBean());
         }
-        beanField.harvest(new ChiliBean());
+        beanField.harvest(0);
 
         Card card = new ChiliBean();
         assertEquals(card.getHarvestRevenue(n), player.getCoins());
+        assert beanField.isEmpty(0);
     }
 
     @Test
-    // Attempting to plant a bean without enough bean fields
-    void testPlantWithoutEnoughBeanFields() {
-        beanField.plant(new BlueBean());
-        beanField.plant(new GardenBean());
-        assertThrows(NotEnoughBeanFieldException.class, () -> beanField.plant(new ChiliBean()));
+    void testPlantTwoCardTypesInOneSpot() {
+        beanField.plant(0, new BlueBean());
+        assertThrows(RuntimeException.class,
+            () -> beanField.plant(0, new GardenBean())
+        );
     }
 
     @Test
     void buyExtraBeanFieldWithoutCoins() {
-        Player player = new Player(); // player has no coins when initialized
-
-        assertThrows(NotEnoughCoinsException.class, player.getBeanField()::buyExtraBeanField);
-        assert player.getBeanField().getNumberOfFields() == 2;
+        assertThrows(NotEnoughCoinsException.class, beanField::buyExtraBeanField);
+        assertEquals(2, beanField.getNumberOfFields());
     }
 
     @Test
     void buyExtraBeanField() {
-        Player player = new Player(); // player has no coins when initialized
         player.addCoins(3);
 
-        assertDoesNotThrow(player.getBeanField()::buyExtraBeanField);
-        assert player.getBeanField().getNumberOfFields() == 3;
+        assertDoesNotThrow(beanField::buyExtraBeanField);
+        assert beanField.getNumberOfFields() == 3;
         assert player.getCoins() == 0;
     }
 }

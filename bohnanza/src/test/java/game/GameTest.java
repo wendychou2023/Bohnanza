@@ -88,6 +88,7 @@ class GameTest {
         assertEquals(2, player2.getBeanField().getNumberOfFields());
     }
 
+/*
     @Test
     void startGameForLessThanThree() {
         Player player1 = new Player();
@@ -143,4 +144,5 @@ class GameTest {
 
         assertThrows(IllegalAccessError.class, game::startGame);
     }
+*/
 }

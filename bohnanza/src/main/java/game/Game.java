@@ -88,57 +88,6 @@ public class Game {
         roundEnded = true;
     }
 
-    /*  Move game loop to GameController
-    public void startGame() {
-        this.activePlayerID = 0;
-
-        //setup players
-        String startGameInfo = "Game started. Setup players";
-        gameController.updateGameInfo(startGameInfo);
-        setupPlayers();
-
-        //game loop
-        while (currentRound < MAX_ROUNDS) {
-            players.get(activePlayerID).takeTurn();
-            // Display current player on gui
-            String currentPlayerInfo = "Current player: " + activePlayerID;
-            gameController.updatePlayerInfo(currentPlayerInfo);
-
-            // Wait for user action
-            waitingForUserAction = true;
-            while (waitingForUserAction) {
-                try {
-                    Thread.sleep(100); // Check every 100 ms
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            nextPlayer();
-
-            if (roundEnded) {
-                System.out.println("Round " + (currentRound - 1) + " ended");
-                StringBuilder roundEndInfo = new StringBuilder("Round " + (currentRound - 1) + " ended\n");
-
-                for (Player player:players) {
-                    System.out.println(player.getBeanField());
-                    roundEndInfo.append("Player ").append(players.indexOf(player)).append(": ")
-                            .append(player.getBeanField()).append("\n");
-                }
-                System.out.println();
-                gameController.updateGameInfo(roundEndInfo.toString());
-
-                roundEnded = false;
-            }
-        }
-
-        //end game (cleanup and calculate winner)
-        String endGameInfo = "Game ended. Calculate winner";
-        gameController.updateGameInfo(endGameInfo);
-        endGame();
-
-    }*/
-
     /**
      * end the game and calculate the winner
      * makes all players harvest all their fields

@@ -19,6 +19,7 @@ public class GameView implements Runnable {
     private Label label;
     private Button startButton;
     private Button activePlayerButton;
+    private Button nextPhaseButton;
 
     public GameView(GUI gui, String[] args) {
         super();
@@ -70,9 +71,12 @@ public class GameView implements Runnable {
         });
         gui.setButtonEnabled(activePlayerButton, false);
 
-//        gui.addButton("Switch to next player", new Coordinate(10, 350), new Size(200, 25), button -> {
-//            gameController.userActionCompleted();
-//        });
+        nextPhaseButton = gui.addButton("Next phase", new Coordinate(10, 350), new Size(200, 25), button -> {
+            gameController.userActionCompleted();
+            gui.setButtonEnabled(nextPhaseButton, false);
+        });
+        gui.setButtonEnabled(nextPhaseButton, false);
+
 
     }
 
@@ -261,5 +265,9 @@ public class GameView implements Runnable {
 
     public void enableActivePlayerButton(){
         gui.setButtonEnabled(activePlayerButton, true);
+    }
+
+    public void enableNextPhaseButton(){
+        gui.setButtonEnabled(nextPhaseButton, true);
     }
 }

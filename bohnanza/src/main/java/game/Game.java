@@ -19,6 +19,7 @@ public class Game {
     private int currentRound = 0;
     private boolean roundEnded = false; //flag to check if the round has ended
 
+    // use less, use getActivePlayer() instead
     public int getActivePlayerID() {
         return activePlayerID;
     }
@@ -131,4 +132,7 @@ public class Game {
         return currentRound < MAX_ROUNDS;
     }
 
+    public Player getActivePlayer() {
+        return players.get(activePlayerID);
+    }
 }

@@ -53,7 +53,7 @@ public class GameController {
         while (game.isGameNotOver()) {
             gameView.enableActivePlayerButton();
 
-            Player activePlayer = game.getPlayers().get(game.getActivePlayerID());
+            Player activePlayer = game.getActivePlayer();
             gameView.updatePlayerInfo("Active player: " + game.getActivePlayerID());
             waitForUserAction();
 

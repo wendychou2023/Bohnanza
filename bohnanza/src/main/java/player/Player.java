@@ -2,6 +2,7 @@ package player;
 
 import card.Card;
 import game.GameController;
+import org.apache.commons.lang3.NotImplementedException;
 import player.phase.Phase;
 import player.phase.PlantingPhase;
 
@@ -85,6 +86,13 @@ public class Player {
         currentPhase = currentPhase.getNextPhase();
         if (currentPhase != null) {
             currentPhase.startPhase(this);
+        } else {
+            throw new NotImplementedException("End of turn not implemented");
+            // notify game that turn has ended
+            // game.endTurn(); or sth like that
+            // if using game: add game field, remove gamecontroller field from player
+
+            // possibly use gamecontroller but this really is a game logic thing
         }
     }
 

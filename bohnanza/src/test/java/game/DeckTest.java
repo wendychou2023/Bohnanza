@@ -11,16 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 class DeckTest {
+    private Deck deck;
 
     @BeforeEach
     void setUp() {
         Game.resetInstance();
+        deck = Game.getInstance().getDeck();
     }
 
     // drawN: player gets N cards, draw pile has N fewer cards
     @Test
     void drawNPlayerGets2() {
-        Deck deck = Game.getInstance().getDeck();
         int n = 2;
         int lenOfDrawPile = deck.getDrawPile().size();
         List<Card> drawnCards =  deck.drawN(n);
@@ -30,7 +31,6 @@ class DeckTest {
 
     @Test
     void drawNPlayerGets3() {
-        Deck deck = Game.getInstance().getDeck();
         int n = 3;
         int lenOfDrawPile = deck.getDrawPile().size();
         List<Card> drawnCards =  deck.drawN(n);
@@ -41,7 +41,6 @@ class DeckTest {
     // refillDrawPile: check empty discard pile and filled draw pile
     @Test
     void refillDrawPileTest(){
-        Deck deck = Game.getInstance().getDeck();
         int n = 6;
 
         // emptys drawpile
@@ -58,7 +57,6 @@ class DeckTest {
     // discardN: check the length of the discard pile added by N
     @Test
     void discardNCardsTest(){
-        Deck deck = Game.getInstance().getDeck();
         int lenOfDiscardPile = deck.getDiscardPile().size();
         int n = 2;
         List<Card> cards = new ArrayList<Card>(); //create cards for discarding

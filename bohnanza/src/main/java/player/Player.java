@@ -5,7 +5,6 @@ import game.GameController;
 import player.phase.Phase;
 import player.phase.PlantingPhase;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,13 +13,11 @@ public class Player {
     private GameController gameController;
     private final List<Card> handCards;
     private final BeanField beanField;
-    private final List<Card> tradingArea;
     private int coins = 0;
 
     public Player() {
         this.handCards = new LinkedList<>();
         this.beanField = new BeanField(this);
-        this.tradingArea = new LinkedList<>();
     }
 
     public List<Card> getHandCards() {
@@ -28,10 +25,6 @@ public class Player {
     }
 
     public BeanField getBeanField() {return beanField;}
-
-    public List<Card> getTradingArea() {
-        return tradingArea;
-    }
 
     public Phase getCurrentPhase(){
         return currentPhase;
@@ -44,7 +37,6 @@ public class Player {
     public GameController getGameController() {
         return gameController;
     }
-
 
     public int getCoins() {
         return coins;
@@ -86,9 +78,5 @@ public class Player {
             return currentPhase != null;
         }
         return false;
-    }
-
-    public TradeOffer makeOffer(Player activePlayer, Collection<Card> activePlayerCards) {
-        return null;
     }
 }

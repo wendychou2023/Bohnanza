@@ -13,6 +13,7 @@ public class Game {
 
     private final List<Player> players;
     private final Deck deck;
+    private final TradingArea tradingArea;
 
     private int activePlayerID = 0;
     private int currentRound = 0;
@@ -24,6 +25,7 @@ public class Game {
 
     private Game() {
         this.deck = new Deck();
+        this.tradingArea = new TradingArea();
         this.players = new LinkedList<>();
     }
 
@@ -56,6 +58,10 @@ public class Game {
 
     public int getCurrentRound() {
         return currentRound;
+    }
+
+    public TradingArea getTradingArea() {
+        return tradingArea;
     }
 
     void setupPlayers() {

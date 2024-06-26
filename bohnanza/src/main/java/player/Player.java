@@ -64,13 +64,32 @@ public class Player {
         return handCards.remove(0);
     }
 
-    public void takeTurn() {
+    /**
+     * starts the planting phase
+     */
+    public void startTurn() {
         // inactive players usually have phase == null
         if (currentPhase == null) {
             currentPhase = new PlantingPhase();
         }
+        currentPhase.startPhase(this);
     }
 
+    /**
+     * ends the current phase and starts the next phase if there is one
+     */
+    public void endPhaseAndStartNext() {
+        currentPhase.endPhase(this);
+
+        // start next phase
+        currentPhase = currentPhase.getNextPhase();
+        if (currentPhase != null) {
+            currentPhase.startPhase(this);
+        }
+    }
+
+    // use endPhaseAndStartNext() instead
+/*
     public boolean executeNextPhase() {
         if (currentPhase != null) {
             currentPhase.doPhase(this);
@@ -79,4 +98,5 @@ public class Player {
         }
         return false;
     }
+*/
 }

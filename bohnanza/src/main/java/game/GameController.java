@@ -57,7 +57,7 @@ public class GameController {
             gameView.updatePlayerInfo("Active player: " + game.getActivePlayerID());
             waitForUserAction();
 
-            activePlayer.takeTurn();
+            activePlayer.startTurn();
             updateGUIForPhase(activePlayer);
 
             processPhase(activePlayer);

@@ -74,7 +74,7 @@ public class GameController {
 
     private void processPhase(Player activePlayer) {
         updateGUIForPhase(activePlayer);
-        while (activePlayer.executeNextPhase()) {
+        while (activePlayer.endPhaseAndStartNext()) {
             gameView.enableNextPhaseButton();
             waitForUserAction();
             updateGUIForPhase(activePlayer);

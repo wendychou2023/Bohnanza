@@ -79,13 +79,14 @@ public class Player {
     /**
      * ends the current phase and starts the next phase if there is one
      */
-    public void endPhaseAndStartNext() {
+    public boolean endPhaseAndStartNext() {
         currentPhase.endPhase(this);
 
         // start next phase
         currentPhase = currentPhase.getNextPhase();
         if (currentPhase != null) {
             currentPhase.startPhase(this);
+            return currentPhase != null;
         } else {
             throw new NotImplementedException("End of turn not implemented");
             // notify game that turn has ended

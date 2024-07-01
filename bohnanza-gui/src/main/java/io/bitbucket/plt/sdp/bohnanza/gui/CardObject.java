@@ -80,6 +80,10 @@ public class CardObject {
     public void resetFlipFlag() {
         initiallyFlipped = false;
     }
+
+    public void setFlipFlagTrue() {
+        initiallyFlipped = true;
+    }
     
     /**
      * Explicitly sets the orientation of the card. The GUI is updated accordingly.

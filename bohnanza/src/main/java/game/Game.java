@@ -1,6 +1,7 @@
 package game;
 
 import player.Player;
+import view.DeckView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -135,4 +136,5 @@ public class Game {
     public Player getActivePlayer() {
         return players.get(activePlayerID);
     }
+
 }

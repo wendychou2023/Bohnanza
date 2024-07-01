@@ -589,4 +589,13 @@ public class GUI {
         }
     }
 
+    /**
+     * initiallyFlipped flags of the all card objects are set to true when the card is drawn and added to player handcard.
+     */
+    public void setCardFlipFlags(CardObject[] discardedCards) {
+        for (CardObject card : discardedCards) {
+            card.setFlipFlagTrue();
+        }
+    }
+
 }

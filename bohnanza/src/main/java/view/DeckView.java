@@ -3,6 +3,7 @@ package view;
 import io.bitbucket.plt.sdp.bohnanza.gui.*;
 import card.Card;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class DeckView {
@@ -28,11 +29,17 @@ public class DeckView {
     }
 
     /**
-     * updateDrawPile removes the upper card drawn by the player from the draw pile
+     * updateDrawPile removes the first card drawn by the player from the draw pile
      */
-    private void updateDrawPile() {
-        CardObject drawnCard = gui.getCardAtPosition(drawPilePosition);
-        gui.removeCard(drawnCard);
+    public void updateDrawPile(Card card) throws Exception {
+        CardObject[] drawPile = gui.getCardObjectsInCompartment(drawPileCompartment);
+        CardObject drawnCard = drawPile[0];
+
+        if (drawnCard.getCardType() == card.getCardType()){
+            gui.removeCard(drawnCard);
+        }else{
+            throw new Exception();
+        }
     }
 
     public void displayDrawPile(List<Card> drawPile){

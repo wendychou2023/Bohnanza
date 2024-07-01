@@ -5,6 +5,7 @@ import game.GameController;
 import org.apache.commons.lang3.NotImplementedException;
 import player.phase.Phase;
 import player.phase.PlantingPhase;
+import view.PlayerView;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,10 +16,15 @@ public class Player {
     private final List<Card> handCards;
     private final BeanField beanField;
     private int coins = 0;
+    private PlayerView playerView;
 
     public Player() {
         this.handCards = new LinkedList<>();
         this.beanField = new BeanField(this);
+    }
+
+    public void setPlayerView(PlayerView playerView){
+        this.playerView = playerView;
     }
 
     public List<Card> getHandCards() {
@@ -53,6 +59,7 @@ public class Player {
 
     public void addToHand(Card card) {
         handCards.add(card);
+        playerView.updateHandView(card);
     }
 
     public void addToHand(List<Card> cards) {

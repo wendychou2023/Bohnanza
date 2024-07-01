@@ -126,6 +126,7 @@ public class Compartment {
 
     	for (int i = 0; i < xPositions.length; i++) {
     		cards[i].x = xPositions[i];
+			cards[i].y = 850;
     	}
         gui.redrawDisplay();
     }

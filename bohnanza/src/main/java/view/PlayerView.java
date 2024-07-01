@@ -1,6 +1,7 @@
 package view;
 
 import player.Player;
+import card.Card;
 import io.bitbucket.plt.sdp.bohnanza.gui.*;
 
 public class PlayerView {
@@ -15,6 +16,7 @@ public class PlayerView {
         this.gui = gui;
         this.player = player;
         this.playerId = playerId;
+        player.setPlayerView(this);
         setupPlayerView();
     }
 
@@ -27,17 +29,18 @@ public class PlayerView {
         updateBeanFieldView();
     }
 
-    public void updateHandView(CardObject card) {
+    public void updateHandView(Card card) {
         int x = 250 * playerId;
         int y = 800;
 
-        gui.addCard(card.getCardType(), new Coordinate(x, y));
+        gui.addCard(card.getCardType(), new Coordinate(x, y)).flip();
         arrangeCardsInCompartment(handCompartment);
     }
 
     private void arrangeCardsInCompartment(Compartment compartment){
         CardObject[] cardObjects = gui.getCardObjectsInCompartment(compartment);
-        compartment.distributeVertical(cardObjects);
+        gui.setCardFlipFlags(cardObjects);
+        compartment.distributeHorizontal(cardObjects);
     }
 
     public void updateBeanFieldView() {

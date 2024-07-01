@@ -5,6 +5,7 @@ import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import player.Player;
 import view.GameView;
 import view.GlobalInfoView;
+import view.DeckView;
 
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +16,7 @@ public class GameController {
     private GameView gameView;
     private GUI gui;
     private GlobalInfoView globalInfoView;
+    private DeckView deckView;
     private boolean waitingForUserAction = true;
 
     Scanner scanner;
@@ -25,10 +27,12 @@ public class GameController {
         this.gui = gui;
         this.scanner = new Scanner(System.in);
         this.globalInfoView = gameView.getGlobalInfoView();
+        this.deckView = gameView.getDeckView();
 
         // Set this controller in the game and gameGUI
         game.setGameController(this);
         gameView.setGameController(this);
+        game.getDeck().setDeckView(deckView);
     }
 
     public void start() {
@@ -121,10 +125,9 @@ public class GameController {
 
     public void userClickStart() {
         new Thread(this::startGame).start();
-        game.setupPlayers();
         gameView.updateInitialView(game.getDeck().getDrawPile(), game.getPlayers(), game.getActivePlayerID());
-    }
-
+        game.setupPlayers();
+        }
 
 
 }

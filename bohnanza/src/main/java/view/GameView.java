@@ -43,6 +43,10 @@ public class GameView implements Runnable {
         return globalInfoView;
     }
 
+    public DeckView getDeckView(){
+        return deckView;
+    }
+
     @Override
     public void run() {
         setupGUI();

@@ -10,6 +10,7 @@ import card.RedBean;
 import card.SoyBean;
 import card.StinkBean;
 import player.NotEnaughCardsException;
+import view.DeckView;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ import java.util.List;
 public class Deck {
     private final List<Card> drawPile = new LinkedList<>();
     private final List<Card> discardPile = new LinkedList<>();
+    private DeckView deckView;
 
     protected Deck() {
         //init drawpile with appropriate amouts of each card
@@ -59,6 +61,10 @@ public class Deck {
         shuffleDrawPile();
     }
 
+    public void setDeckView(DeckView deckView) {
+        this.deckView = deckView;
+    }
+
     public List<Card> getDrawPile() {
         return drawPile;
     }
@@ -80,7 +86,7 @@ public class Deck {
      * start next turn
      * @return card drawn from drawPile
      */
-    public Card draw() throws NotEnaughCardsException {
+    public Card draw() throws Exception {
         if (drawPile.isEmpty()) {
             refillDrawPile();
         }
@@ -90,7 +96,9 @@ public class Deck {
             throw new NotEnaughCardsException();
         }
 
-        return drawPile.remove(0);
+        Card card = drawPile.remove(0);
+        deckView.updateDrawPile(card);
+        return card;
     }
 
     /**
@@ -109,6 +117,8 @@ public class Deck {
                 output.add(card);
             } catch (NotEnaughCardsException e) {
                 break;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
         return output;

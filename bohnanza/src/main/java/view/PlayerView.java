@@ -21,16 +21,16 @@ public class PlayerView {
     }
 
     private void setupPlayerView() {
-        handCompartment = gui.addCompartment(new Coordinate(250 * playerId, 800), new Size(250, 300), "Player " + playerId);
-        beanFieldCompartment = gui.addCompartment(new Coordinate(250 * playerId, 700), new Size(250, 100), "", "BOHNENFELD_ALLE");
-        coinLabel = gui.addLabel(new Coordinate(250 * playerId, 600), "Coins: " + player.getCoins());
+        handCompartment = gui.addCompartment(new Coordinate(500 * playerId, 800), new Size(500, 400), "Player " + playerId);
+        beanFieldCompartment = gui.addCompartment(new Coordinate(500 * playerId, 700), new Size(500, 150), "", "BOHNENFELD_ALLE");
+        coinLabel = gui.addLabel(new Coordinate(500 * playerId, 600), "Coins: " + player.getCoins());
 
 //        updateHandView();
         updateBeanFieldView();
     }
 
     public void updateHandView(Card card) {
-        int x = 250 * playerId;
+        int x = 500 * playerId;
         int y = 800;
 
         gui.addCard(card.getCardType(), new Coordinate(x, y)).flip();

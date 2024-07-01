@@ -19,10 +19,10 @@ public class DeckView {
     final int X_DRAW = 5;
     final int Y_DRAW = 400;
     final Coordinate drawPilePosition = new Coordinate(X_DRAW, Y_DRAW);
-    final int X_DISCARD = 110;
+    final int X_DISCARD = 250;
     final int Y_DISCARD = 400;
     final Coordinate discardPilePosition = new Coordinate(X_DISCARD, Y_DISCARD);
-    final Size compartmentSize = new Size(59, 95);
+    final Size compartmentSize = new Size(200, 200);
     private void setupDeckView() {
         drawPileCompartment = gui.addCompartment(drawPilePosition, compartmentSize, "Draw\nPile");
         discardPileCompartment = gui.addCompartment(discardPilePosition, compartmentSize, "Discard\nPile");

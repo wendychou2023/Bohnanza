@@ -71,6 +71,7 @@ public class GUI {
      */
     public GUI(Size initialWindowSize, Size cardSize, Color background, Color foreground) {
         this(initialWindowSize, cardSize, cardSize, background, foreground);
+
     }
 
     /**
@@ -98,9 +99,9 @@ public class GUI {
         sc.setContent(child);
 
         canvas = new Canvas(child, SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE);
-
         child.setLayout(new FillLayout());
         sc.setMinSize(initialWindowSize.width, initialWindowSize.height);
+        sc.setSize(initialWindowSize.width, initialWindowSize.height);
 
         // Expand both horizontally and vertically
         sc.setExpandHorizontal(true);

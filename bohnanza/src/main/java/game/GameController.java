@@ -127,7 +127,7 @@ public class GameController {
         new Thread(this::startGame).start();
         gameView.updateInitialView(game.getDeck().getDrawPile(), game.getPlayers(), game.getActivePlayerID());
         game.setupPlayers();
-        }
+    }
 
 
 }

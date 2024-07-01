@@ -580,4 +580,13 @@ public class GUI {
         return result;
     }
 
+    /**
+	 * initiallyFlipped flags of the all card objects are reset to false when the discard pile is shuffled.
+	 */
+    public void resetAllCardFlipFlags(CardObject[] discardedCards) {
+        for (CardObject card : discardedCards) {
+            card.resetFlipFlag();
+        }
+    }
+
 }

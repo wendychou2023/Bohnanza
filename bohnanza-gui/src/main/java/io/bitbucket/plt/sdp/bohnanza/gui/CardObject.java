@@ -20,6 +20,7 @@ public class CardObject {
     private boolean showFront;
     private CardType card;
     private GUI gui;
+    private boolean initiallyFlipped;
 
     /**
      * Create a new CardObject which is displayed by a GUI.
@@ -37,6 +38,7 @@ public class CardObject {
         this.showFront = showFront;
         this.card = card;
         this.gui = gui;
+        this.initiallyFlipped = false;
     }
 
     /**
@@ -68,8 +70,15 @@ public class CardObject {
      * after invocation of this method, and vice versa. The GUI is updated accordingly.
      */
     public void flip() {
-        showFront = !showFront;
-        gui.redrawDisplay();
+        if (!initiallyFlipped) {
+            showFront = !showFront;
+            initiallyFlipped = true;
+            gui.redrawDisplay();
+        }
+    }
+
+    public void resetFlipFlag() {
+        initiallyFlipped = false;
     }
     
     /**

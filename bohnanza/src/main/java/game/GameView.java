@@ -55,7 +55,7 @@ public class GameView implements Runnable {
         // - information on the dropped card is shown in the dedicated label
         // - the card is moved to the front, i.e., displayed top-most
         gui.setCardDnDHandler((CardObject card, Coordinate mouseCoordinate, Coordinate newCoordinate) -> {
-//            card.flip();
+            card.flip();
             label.updateLabel(card.toString());
             gui.moveToTop(card);
             return newCoordinate;
@@ -198,24 +198,11 @@ public class GameView implements Runnable {
 
         for(Player player: players){
             playerCompartments[i] = setupPlayerCompartment(i, "Player " + i);
-            int finalI = i;
-            // Add a flip button in each player compartment
-            setupPlayerCompartmentButton(i, button -> {
-                // Retrieve the array of CardObject from the compartment
-                CardObject[] cardObjects = gui.getCardObjectsInCompartment(playerCompartments[finalI]);
-
-                // Check if cardObjects is not null to avoid NullPointerException
-                if (cardObjects != null) {
-                    // Use Arrays.stream() to iterate and flip each card
-                    Arrays.stream(cardObjects).forEach(CardObject::flip);
-                }
-            });
-
 
             // Only found image for with 3 bean fields
             playerBeanfield[i] = setupPlayerBeanfield(i, "");
 
-            updatePlayerHandCard(player, i);
+//            updatePlayerHandCard(player, i);
 
             i++;
         }

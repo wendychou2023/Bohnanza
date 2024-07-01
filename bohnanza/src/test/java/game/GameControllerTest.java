@@ -1,17 +1,14 @@
 package game;
 
-import card.Card;
 import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import player.Player;
-import java.util.List;
+import view.GameView;
+
 import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class GameControllerTest {

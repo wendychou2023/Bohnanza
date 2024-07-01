@@ -4,6 +4,7 @@ import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Player;
+import view.GameView;
 
 import java.util.Scanner;
 

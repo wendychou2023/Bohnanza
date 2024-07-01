@@ -1,6 +1,6 @@
 import game.Game;
 import game.GameController;
-import game.GameView;
+import view.GameView;
 import io.bitbucket.plt.sdp.bohnanza.gui.Color;
 import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import io.bitbucket.plt.sdp.bohnanza.gui.Size;

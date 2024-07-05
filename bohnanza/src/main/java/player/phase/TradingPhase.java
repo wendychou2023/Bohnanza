@@ -47,18 +47,19 @@ public class TradingPhase implements Phase {
     }
 
     boolean tradingCardSelected = false;
-
+    boolean nonActivePlayerOfferCard = false;
     /**
      * isMoveValid checks the following:
      * Case 1: from coordinate is one of the two trading cards & to coordinate is the first trading compartment
      * Case 2: from coordinate is one of the player compartment & to coordinate is the second trading compartment
+     * Only allows players to trade one card at a time.
      *
      * @param cardMoveEvent contains from coordinate, to coordinate, and cardObject
      * @return boolean
      */
     @Override
     public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
-        if (tradingAreaView.tradingCardMoved(cardMoveEvent.from)
+        if (!tradingCardSelected && tradingAreaView.tradingCardMoved(cardMoveEvent.from)
                 && tradingAreaView.placeAtFirstTradingCompartment(cardMoveEvent.to)){
             tradingCardSelected = true;
             return true;
@@ -75,8 +76,9 @@ public class TradingPhase implements Phase {
             }
         }
 
-        if (tradingCardSelected && fromNonActivePlayerHand &&
+        if (!nonActivePlayerOfferCard && tradingCardSelected && fromNonActivePlayerHand &&
                 tradingAreaView.placeAtSecondTradingCompartment(cardMoveEvent.to)){
+            nonActivePlayerOfferCard = true;
             return true;
         }
 

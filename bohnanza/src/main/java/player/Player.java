@@ -79,7 +79,7 @@ public class Player {
     /**
      * starts the planting phase
      */
-    public void startTurn() {
+    public void startPlantingPhase() {
         // inactive players usually have phase == null
         if (currentPhase == null) {
             currentPhase = new PlantingPhase(playerView);

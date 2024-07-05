@@ -79,7 +79,7 @@ public class GameView implements Runnable {
         });
 
         nextPhaseButton = gui.addButton("Next phase", new Coordinate(10, 350), new Size(200, 25), button -> {
-            gameController.userActionCompleted();
+            gameController.nextPhaseButtonClicked();
             gui.setButtonEnabled(nextPhaseButton, false);
         });
         gui.setButtonEnabled(nextPhaseButton, false);

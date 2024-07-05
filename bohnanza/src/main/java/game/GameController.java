@@ -63,17 +63,13 @@ public class GameController {
     Player activePlayer;
     private void gameLoop() {
         while (game.isGameNotOver()) {
-            //gameView.enableActivePlayerButton();
 
             activePlayer = game.getActivePlayer();
             globalInfoView.updatePlayerInfo("Active player: " + game.getActivePlayerID());
-            //waitForUserAction();
 
-            activePlayer.startTurn();
-            updateGUIForPhase(activePlayer);
+            activePlayer.startPlantingPhase();
 
-            waitForUserAction();
-            processPhase(activePlayer);
+            phaseLoop(activePlayer);
 
             game.nextPlayer();
 
@@ -85,23 +81,22 @@ public class GameController {
         endGame();
     }
 
-    public boolean actionIsAllowed(CardMoveEvent cardMoveEvent){
-        //check if the action is allowed in the current phase (call isMoveValid)
-        // see how to get current phase
-        Phase currentPhase = activePlayer.getCurrentPhase();
-
-        return currentPhase.isMoveValid(cardMoveEvent);
-    }
-
-    private void processPhase(Player activePlayer) {
-        updateGUIForPhase(activePlayer);
-        while (activePlayer.endPhaseAndStartNext()) {
-            gameView.enableNextPhaseButton();
-            waitForUserAction();
+    private void phaseLoop(Player activePlayer) {
+        while (activePlayer.getCurrentPhase().getNextPhase() != null) {
             updateGUIForPhase(activePlayer);
+            waitForUserAction();
+
+            gameView.enableNextPhaseButton();
+            waitNextPhaseButtonClicked();
+            activePlayer.endPhaseAndStartNext();
         }
     }
 
+    /**
+     * Update current player and current phase on GUI.
+     *
+     * @param activePlayer
+     */
     private void updateGUIForPhase(Player activePlayer) {
         globalInfoView.updatePlayerInfo("Active player: " + game.getActivePlayerID() + " ("+ activePlayer.getCurrentPhase() + ")");
     }
@@ -109,6 +104,18 @@ public class GameController {
     private void waitForUserAction() {
         waitingForUserAction = true;
         while (waitingForUserAction) {
+            try {
+                Thread.sleep(100); // Check every 100 ms
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean nextPhaseButton;
+    private void waitNextPhaseButtonClicked() {
+        nextPhaseButton = true;
+        while (nextPhaseButton) {
             try {
                 Thread.sleep(100); // Check every 100 ms
             } catch (InterruptedException e) {
@@ -136,11 +143,26 @@ public class GameController {
         waitingForUserAction = false;
     }
 
+    public void nextPhaseButtonClicked() {
+        nextPhaseButton = false;
+    }
+
+
     public void userClickStart() {
         new Thread(this::startGame).start();
         gameView.updateInitialView(game.getDeck().getDrawPile(), game.getPlayers(), game.getActivePlayerID());
         game.setupPlayers();
     }
 
+    /**
+     * Trigger check of whether the player action on the view is valid
+     *
+     * @param cardMoveEvent
+     * @return
+     */
+    public boolean actionIsAllowed(CardMoveEvent cardMoveEvent){
+        Phase currentPhase = activePlayer.getCurrentPhase();
 
+        return currentPhase.isMoveValid(cardMoveEvent);
+    }
 }

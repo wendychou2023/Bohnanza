@@ -3,6 +3,8 @@ package player.phase;
 import card.Card;
 import game.CardMoveEvent;
 import game.Game;
+import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
+import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.Player;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class TradingPhase implements Phase {
     }
 
     @Override
-    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
+    public boolean isMoveValid(Coordinate from, Coordinate to, CardObject card) {
         return false;
     }
 

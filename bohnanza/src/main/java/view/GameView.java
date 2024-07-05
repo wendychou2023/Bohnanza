@@ -69,14 +69,15 @@ public class GameView implements Runnable {
         gui.setCardDnDHandler((CardObject card, Coordinate mouseCoordinate, Coordinate newCoordinate) -> {
             card.flip();
             gui.moveToTop(card);
+            gameController.actionIsAllowed(mouseCoordinate, newCoordinate, card);
             return newCoordinate;
         });
 
-        activePlayerButton = gui.addButton("Active player takes turn", new Coordinate(10, 300), new Size(200, 25), button -> {
-            gameController.userActionCompleted();
-            gui.setButtonEnabled(activePlayerButton, false);
-        });
-        gui.setButtonEnabled(activePlayerButton, false);
+//        activePlayerButton = gui.addButton("Active player takes turn", new Coordinate(10, 300), new Size(200, 25), button -> {
+//            gameController.userActionCompleted();
+//            gui.setButtonEnabled(activePlayerButton, false);
+//        });
+        //gui.setButtonEnabled(activePlayerButton, false);
 
         nextPhaseButton = gui.addButton("Next phase", new Coordinate(10, 350), new Size(200, 25), button -> {
             gameController.userActionCompleted();
@@ -91,7 +92,7 @@ public class GameView implements Runnable {
     public void updateInitialView(List<Card> drawPile, List<Player> players, int activePlayerId){
         // Disable the start button after start
         gui.setButtonEnabled(startButton, false);
-        gui.setButtonEnabled(activePlayerButton, true);
+        //gui.setButtonEnabled(activePlayerButton, true);
         globalInfoView.updateGameInfo("");
 
         deckView.displayDrawPile(drawPile);
@@ -102,9 +103,9 @@ public class GameView implements Runnable {
         }
     }
 
-    public void enableActivePlayerButton(){
-        gui.setButtonEnabled(activePlayerButton, true);
-    }
+//    public void enableActivePlayerButton(){
+//        gui.setButtonEnabled(activePlayerButton, true);
+//    }
 
     public void enableNextPhaseButton(){
         gui.setButtonEnabled(nextPhaseButton, true);

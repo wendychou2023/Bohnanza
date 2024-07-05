@@ -1,5 +1,6 @@
 package view;
 
+import org.eclipse.swt.graphics.Rectangle;
 import player.Player;
 import card.Card;
 import io.bitbucket.plt.sdp.bohnanza.gui.*;
@@ -9,7 +10,8 @@ public class PlayerView {
     private final Player player;
     private final int playerId;
     private Compartment handCompartment;
-    private Compartment beanFieldCompartment;
+    private Compartment[] beanFieldCompartment;
+    private Compartment beanFieldImage;
     private Label coinLabel;
 
     public PlayerView(GUI gui, Player player, int playerId) {
@@ -20,9 +22,18 @@ public class PlayerView {
         setupPlayerView();
     }
 
+    Coordinate handUpperLeftCoordinate;
+    Size handCompartmentSize;
+    Coordinate bfImageUpperLeftCoordinate;
+    Size bfImageComparmentSize;
     private void setupPlayerView() {
-        handCompartment = gui.addCompartment(new Coordinate(500 * playerId, 800), new Size(500, 400), "Player " + playerId);
-        beanFieldCompartment = gui.addCompartment(new Coordinate(500 * playerId, 700), new Size(500, 150), "", "BOHNENFELD_ALLE");
+        handUpperLeftCoordinate = new Coordinate(500 * playerId, 800);
+        handCompartmentSize = new Size(500, 400);
+        bfImageUpperLeftCoordinate = new Coordinate(500 * playerId, 700);
+        bfImageComparmentSize = new Size(500, 150);
+
+        handCompartment = gui.addCompartment(handUpperLeftCoordinate, handCompartmentSize, "Player " + playerId);
+        beanFieldImage = gui.addCompartment(bfImageUpperLeftCoordinate, bfImageComparmentSize, "", "BOHNENFELD_ALLE");
         coinLabel = gui.addLabel(new Coordinate(500 * playerId, 650), "Coins: " + player.getCoins());
 
 //        updateHandView();
@@ -50,5 +61,28 @@ public class PlayerView {
     public void updateCoins() {
         coinLabel.updateLabel("Coins: " + player.getCoins());
     }
+
+    public boolean toInBeanField(Coordinate coordinate) {
+        // Define the bounds of the beanFieldCompartment
+        int xMin = bfImageUpperLeftCoordinate.x;
+        int yMin = bfImageUpperLeftCoordinate.y;
+        int xMax = xMin + bfImageComparmentSize.width;
+        int yMax = yMin + bfImageComparmentSize.height;
+
+        // Check if the coordinate is within these bounds
+        return coordinate.x >= xMin && coordinate.x <= xMax && coordinate.y >= yMin && coordinate.y <= yMax;
+    }
+
+    public boolean fromInHand(Coordinate coordinate) {
+        // Define the bounds of the beanFieldCompartment
+        int xMin = handUpperLeftCoordinate.x;
+        int yMin = handUpperLeftCoordinate.y;
+        int xMax = xMin + handCompartmentSize.width;
+        int yMax = yMin + handCompartmentSize.height;
+
+        // Check if the coordinate is within these bounds
+        return coordinate.x >= xMin && coordinate.x <= xMax && coordinate.y >= yMin && coordinate.y <= yMax;
+    }
+
 }
 

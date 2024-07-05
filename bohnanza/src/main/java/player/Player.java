@@ -27,6 +27,10 @@ public class Player {
         this.playerView = playerView;
     }
 
+    public PlayerView getPlayerView(){
+        return playerView;
+    }
+
     public List<Card> getHandCards() {
         return handCards;
     }
@@ -78,7 +82,7 @@ public class Player {
     public void startTurn() {
         // inactive players usually have phase == null
         if (currentPhase == null) {
-            currentPhase = new PlantingPhase();
+            currentPhase = new PlantingPhase(playerView);
         }
         currentPhase.startPhase(this);
     }

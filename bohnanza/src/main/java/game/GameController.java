@@ -1,8 +1,11 @@
 package game;
 
 import card.Card;
+import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
+import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import player.Player;
+import player.phase.Phase;
 import view.GameView;
 import view.GlobalInfoView;
 import view.DeckView;
@@ -57,13 +60,14 @@ public class GameController {
         gameLoop();
     }
 
+    Player activePlayer;
     private void gameLoop() {
         while (game.isGameNotOver()) {
-            gameView.enableActivePlayerButton();
+            //gameView.enableActivePlayerButton();
 
-            Player activePlayer = game.getActivePlayer();
+            activePlayer = game.getActivePlayer();
             globalInfoView.updatePlayerInfo("Active player: " + game.getActivePlayerID());
-            waitForUserAction();
+            //waitForUserAction();
 
             activePlayer.startTurn();
             updateGUIForPhase(activePlayer);
@@ -78,6 +82,15 @@ public class GameController {
         }
 
         endGame();
+    }
+
+    public boolean actionIsAllowed(Coordinate from, Coordinate to, CardObject card){
+        //check if the action is allowed in the current phase (call isMoveValid)
+        // see how to get current phase
+        Phase currentPhase = activePlayer.getCurrentPhase();
+        currentPhase.isMoveValid(from, to, card);
+
+        return false;
     }
 
     private void processPhase(Player activePlayer) {

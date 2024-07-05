@@ -16,11 +16,11 @@ public class DeckView {
         setupDeckView();
     }
 
-    final int X_DRAW = 5;
-    final int Y_DRAW = 400;
+    final int X_DRAW = 600;
+    final int Y_DRAW = 50;
     final Coordinate drawPilePosition = new Coordinate(X_DRAW, Y_DRAW);
-    final int X_DISCARD = 250;
-    final int Y_DISCARD = 400;
+    final int X_DISCARD = 850;
+    final int Y_DISCARD = 50;
     final Coordinate discardPilePosition = new Coordinate(X_DISCARD, Y_DISCARD);
     final Size compartmentSize = new Size(200, 200);
     private void setupDeckView() {

@@ -16,10 +16,10 @@ public class TradingAreaView {
     }
 
     final int X_First = 600;
-    final int Y_First = 200;
+    final int Y_First = 300;
     final Coordinate FirstTradingPosition = new Coordinate(X_First, Y_First);
     final int X_Second = 850;
-    final int Y_Second = 200;
+    final int Y_Second = 300;
     final Coordinate SecondTradingPosition = new Coordinate(X_Second, Y_Second);
     final Size compartmentSize = new Size(200, 200);
 

@@ -41,14 +41,16 @@ public class PlantingPhase implements Phase {
      */
     @Override
     public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
-        if (!(playerView.fromInHand(cardMoveEvent.from) && playerView.toInBeanField(cardMoveEvent.to))){
+        if (!(playerView.fromInHand(cardMoveEvent.from) && playerView.toInBeanField(cardMoveEvent.to))) {
             return false;
         }
 
         int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
 //        if (player.getBeanField().canPlant(plantingSpot, cardMoveEvent.card.card)){
 //              player.getBF.plant()
-//        }
+//        }else{
+//              return false;
+//         }
 
         return true;
     }

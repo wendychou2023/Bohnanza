@@ -613,4 +613,13 @@ public class GUI {
         }
     }
 
+    public synchronized void moveCard(CardObject card, Coordinate newCoordinate) {
+        if (card != null && displayedCards.contains(card)) {
+            card.x = newCoordinate.x;
+            card.y = newCoordinate.y;
+            redrawDisplay();
+        }
+    }
+
+
 }

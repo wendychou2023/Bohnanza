@@ -18,8 +18,10 @@ public class Player {
     private final BeanField beanField;
     private int coins = 0;
     private PlayerView playerView;
+    private int playerId;
 
-    public Player() {
+    public Player(int playerId) {
+        this.playerId = playerId;
         this.handCards = new LinkedList<>();
         this.beanField = new BeanField(this);
     }
@@ -48,6 +50,10 @@ public class Player {
 
     public GameController getGameController() {
         return gameController;
+    }
+
+    public int getPlayerId(){
+        return playerId;
     }
 
     public int getCoins() {

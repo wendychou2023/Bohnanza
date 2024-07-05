@@ -47,6 +47,10 @@ public class GameView implements Runnable {
         return tradingAreaView;
     }
 
+    public PlayerView[] getPlayerViews(){
+        return playerViews;
+    }
+
     @Override
     public void run() {
         setupGUI();

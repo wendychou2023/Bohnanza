@@ -20,7 +20,7 @@ public class TradingPhase implements Phase {
     Deck deck;
     List<Card> tradingCards;
     TradingAreaView tradingAreaView;
-    PlayerView playerView;
+    PlayerView[] playerViews;
     GameView gameView;
 
     @Override
@@ -31,6 +31,7 @@ public class TradingPhase implements Phase {
 
         this.gameView = gameView;
         this.tradingAreaView = gameView.getTradingAreaView();
+        this.playerViews = gameView.getPlayerViews();
 
         prepareForTrade();
     }
@@ -45,8 +46,40 @@ public class TradingPhase implements Phase {
 
     }
 
+    boolean tradingCardSelected = false;
+
+    /**
+     * isMoveValid checks the following:
+     * Case 1: from coordinate is one of the two trading cards & to coordinate is the first trading compartment
+     * Case 2: from coordinate is one of the player compartment & to coordinate is the second trading compartment
+     *
+     * @param cardMoveEvent contains from coordinate, to coordinate, and cardObject
+     * @return boolean
+     */
     @Override
     public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
+        if (tradingAreaView.tradingCardMoved(cardMoveEvent.from)
+                && tradingAreaView.placeAtFirstTradingCompartment(cardMoveEvent.to)){
+            tradingCardSelected = true;
+            return true;
+        }
+
+        boolean fromNonActivePlayerHand = false;
+        for (int i = 0; i < playerViews.length; i++){
+            if (i != player.getPlayerId()){
+                fromNonActivePlayerHand = playerViews[i].fromInHand(cardMoveEvent.from);
+            }
+
+            if (fromNonActivePlayerHand){
+                break;
+            }
+        }
+
+        if (tradingCardSelected && fromNonActivePlayerHand &&
+                tradingAreaView.placeAtSecondTradingCompartment(cardMoveEvent.to)){
+            return true;
+        }
+
         return false;
     }
 

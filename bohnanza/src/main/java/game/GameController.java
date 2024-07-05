@@ -47,7 +47,7 @@ public class GameController {
         System.out.println("You entered: " + numOfPlayers);
 
         for (int i = 0; i < numOfPlayers; i++) {
-            game.addPlayer(new Player());
+            game.addPlayer(new Player(i));
         }
 
         gui.start();

@@ -84,11 +84,11 @@ public class GameController {
         endGame();
     }
 
-    public boolean actionIsAllowed(Coordinate from, Coordinate to, CardObject card){
+    public boolean actionIsAllowed(CardMoveEvent cardMoveEvent){
         //check if the action is allowed in the current phase (call isMoveValid)
         // see how to get current phase
         Phase currentPhase = activePlayer.getCurrentPhase();
-        currentPhase.isMoveValid(from, to, card);
+        currentPhase.isMoveValid(cardMoveEvent);
 
         return false;
     }

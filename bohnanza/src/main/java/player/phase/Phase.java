@@ -9,6 +9,6 @@ import view.PlayerView;
 public interface Phase {
     void startPhase(Player player);
     void endPhase(Player player);
-    boolean isMoveValid(Coordinate from, Coordinate to, CardObject card);
+    boolean isMoveValid(CardMoveEvent cardMoveEvent);
     Phase getNextPhase();
 }

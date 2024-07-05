@@ -1,6 +1,7 @@
 package view;
 
 import card.Card;
+import game.CardMoveEvent;
 import game.GameController;
 import io.bitbucket.plt.sdp.bohnanza.gui.*;
 import player.Player;
@@ -67,9 +68,10 @@ public class GameView implements Runnable {
         // - whenever a d'n'd action finishes, the dropped card is flipped (toggle whether the front or back is shown)
         // - the card is moved to the front, i.e., displayed top-most
         gui.setCardDnDHandler((CardObject card, Coordinate mouseCoordinate, Coordinate newCoordinate) -> {
+            CardMoveEvent cardMoveEvent = new CardMoveEvent(mouseCoordinate, newCoordinate, card);
+            gameController.actionIsAllowed(cardMoveEvent);
             card.flip();
             gui.moveToTop(card);
-            gameController.actionIsAllowed(mouseCoordinate, newCoordinate, card);
             return newCoordinate;
         });
 

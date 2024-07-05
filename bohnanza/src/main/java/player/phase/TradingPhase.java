@@ -23,7 +23,7 @@ public class TradingPhase implements Phase {
     }
 
     @Override
-    public boolean isMoveValid(Coordinate from, Coordinate to, CardObject card) {
+    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
         return false;
     }
 

@@ -20,7 +20,7 @@ public class DrawPhase implements Phase {
     }
 
     @Override
-    public boolean isMoveValid(Coordinate from, Coordinate to, CardObject card) {
+    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
         return false;
     }
 

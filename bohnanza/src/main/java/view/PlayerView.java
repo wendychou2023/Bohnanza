@@ -34,6 +34,14 @@ public class PlayerView {
 
         handCompartment = gui.addCompartment(handUpperLeftCoordinate, handCompartmentSize, "Player " + playerId);
         beanFieldImage = gui.addCompartment(bfImageUpperLeftCoordinate, bfImageComparmentSize, "", "BOHNENFELD_ALLE");
+        beanFieldCompartment = new Compartment[3];
+        for (int i = 0; i < beanFieldCompartment.length; i++) {
+            beanFieldCompartment[i] = gui.addCompartment(
+                    new Coordinate(500 * playerId + 170 * i, 700),
+                    new Size(170, 150),
+                    "_" + (i + 1)
+            );
+        }
         coinLabel = gui.addLabel(new Coordinate(500 * playerId, 650), "Coins: " + player.getCoins());
 
 //        updateHandView();

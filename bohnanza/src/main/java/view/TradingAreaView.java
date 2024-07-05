@@ -30,7 +30,7 @@ public class TradingAreaView {
     }
 
     /**
-     * updateDrawPile removes the first card drawn by the player from the draw pile
+     * updateFirtTrade removes the first card drawn by the player from the Handcards
      */
     public void updateFirstTrade(Card card)  {
 

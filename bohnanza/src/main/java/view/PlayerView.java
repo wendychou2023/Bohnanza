@@ -23,7 +23,7 @@ public class PlayerView {
     private void setupPlayerView() {
         handCompartment = gui.addCompartment(new Coordinate(500 * playerId, 800), new Size(500, 400), "Player " + playerId);
         beanFieldCompartment = gui.addCompartment(new Coordinate(500 * playerId, 700), new Size(500, 150), "", "BOHNENFELD_ALLE");
-        coinLabel = gui.addLabel(new Coordinate(500 * playerId, 600), "Coins: " + player.getCoins());
+        coinLabel = gui.addLabel(new Coordinate(500 * playerId, 650), "Coins: " + player.getCoins());
 
 //        updateHandView();
         updateBeanFieldView();

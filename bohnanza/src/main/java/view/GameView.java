@@ -13,6 +13,7 @@ public class GameView implements Runnable {
     private final GlobalInfoView globalInfoView;
     private final DeckView deckView;
     private PlayerView[] playerViews;
+    private TradingAreaView tradingAreaView;
 
 
     @SuppressWarnings("unused")
@@ -27,6 +28,7 @@ public class GameView implements Runnable {
         this.args = args;
         this.globalInfoView = new GlobalInfoView(gui);
         this.deckView = new DeckView(gui);
+        this.tradingAreaView = new TradingAreaView(gui);
     }
 
     public void setGameController(GameController gameController) {
@@ -39,6 +41,9 @@ public class GameView implements Runnable {
 
     public DeckView getDeckView(){
         return deckView;
+    }
+    public TradingAreaView getTradingAreaView(){
+        return tradingAreaView;
     }
 
     @Override

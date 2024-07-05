@@ -5,12 +5,13 @@ import game.Game;
 import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
 import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.Player;
+import view.GameView;
 
 public class DrawPhase implements Phase {
     Phase nextPhase = null; // no next phase
 
     @Override
-    public void startPhase(Player player) {
+    public void startPhase(Player player, GameView gameView) {
 
     }
 

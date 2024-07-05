@@ -67,7 +67,7 @@ public class GameController {
             activePlayer = game.getActivePlayer();
             globalInfoView.updatePlayerInfo("Active player: " + game.getActivePlayerID());
 
-            activePlayer.startPlantingPhase();
+            activePlayer.startPlantingPhase(gameView);
 
             phaseLoop(activePlayer);
 
@@ -88,7 +88,7 @@ public class GameController {
 
             gameView.enableNextPhaseButton();
             waitNextPhaseButtonClicked();
-            activePlayer.endPhaseAndStartNext();
+            activePlayer.endPhaseAndStartNext(gameView);
         }
     }
 

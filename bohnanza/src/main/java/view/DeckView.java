@@ -22,7 +22,7 @@ public class DeckView {
     final int X_DISCARD = 850;
     final int Y_DISCARD = 50;
     final Coordinate discardPilePosition = new Coordinate(X_DISCARD, Y_DISCARD);
-    final Size compartmentSize = new Size(200, 200);
+    final Size compartmentSize = new Size(150, 200);
     private void setupDeckView() {
         drawPileCompartment = gui.addCompartment(drawPilePosition, compartmentSize, "Draw\nPile");
         discardPileCompartment = gui.addCompartment(discardPilePosition, compartmentSize, "Discard\nPile");

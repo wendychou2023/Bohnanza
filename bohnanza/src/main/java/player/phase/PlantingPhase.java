@@ -7,11 +7,13 @@ import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.BeanField;
 import player.PlantingSpot;
 import player.Player;
+import view.GameView;
 import view.PlayerView;
 
 public class PlantingPhase implements Phase {
     Phase nextPhase = new TradingPhase();
     PlayerView playerView;
+    GameView gameView;
     Player player;
 
     public PlantingPhase(PlayerView playerView){
@@ -19,8 +21,9 @@ public class PlantingPhase implements Phase {
     }
 
     @Override
-    public void startPhase(Player player) {
+    public void startPhase(Player player, GameView gameView) {
         this.player = player;
+        this.gameView = gameView;
     }
 
     @Override

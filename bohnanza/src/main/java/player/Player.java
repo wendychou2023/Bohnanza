@@ -5,6 +5,7 @@ import game.GameController;
 import org.apache.commons.lang3.NotImplementedException;
 import player.phase.Phase;
 import player.phase.PlantingPhase;
+import view.GameView;
 import view.PlayerView;
 
 import java.util.LinkedList;
@@ -79,24 +80,24 @@ public class Player {
     /**
      * starts the planting phase
      */
-    public void startPlantingPhase() {
+    public void startPlantingPhase(GameView gameView) {
         // inactive players usually have phase == null
         if (currentPhase == null) {
             currentPhase = new PlantingPhase(playerView);
         }
-        currentPhase.startPhase(this);
+        currentPhase.startPhase(this, gameView);
     }
 
     /**
      * ends the current phase and starts the next phase if there is one
      */
-    public boolean endPhaseAndStartNext() {
+    public boolean endPhaseAndStartNext(GameView gameView) {
         currentPhase.endPhase(this);
 
         // start next phase
         currentPhase = currentPhase.getNextPhase();
         if (currentPhase != null) {
-            currentPhase.startPhase(this);
+            currentPhase.startPhase(this, gameView);
             return currentPhase != null;
         } else {
             throw new NotImplementedException("End of turn not implemented");

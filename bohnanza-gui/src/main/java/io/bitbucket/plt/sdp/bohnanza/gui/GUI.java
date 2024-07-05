@@ -209,6 +209,11 @@ public class GUI {
         });
     }
 
+    /**
+     * Initial position of the card is stored.
+     * If the drag n drop is not allowed, the card returns to the initial position.
+     */
+    private Coordinate initialCardPosition;
     private void setupDnD(final Canvas canvas) {
         canvas.addListener(SWT.MouseDown, e -> {
             synchronized (GUI.this) {
@@ -222,6 +227,8 @@ public class GUI {
                 } else {
                     zoomedCard = null;
                     cardBeingMoved = card;
+
+                    initialCardPosition = new Coordinate(card.x, card.y);
 
                     deltaX = e.x - card.x;
                     deltaY = e.y - card.y;
@@ -244,11 +251,18 @@ public class GUI {
         canvas.addListener(SWT.MouseUp, e -> {
             synchronized (GUI.this) {
                 if (dndHandler != null && cardBeingMoved != null) {
-                    Coordinate dndResult = dndHandler.cardDraggedAndDropped(cardBeingMoved, new Coordinate(e.x, e.y),
-                            new Coordinate(e.x - deltaX, e.y - deltaY));
+                    Coordinate originalCoordinate = initialCardPosition;
+                    Coordinate newCoordinate = new Coordinate(e.x - deltaX, e.y - deltaY);
+
+                    Coordinate dndResult = dndHandler.cardDraggedAndDropped(cardBeingMoved, originalCoordinate, newCoordinate);
+
+
                     if (dndResult != null) {
                         cardBeingMoved.x = dndResult.x;
                         cardBeingMoved.y = dndResult.y;
+                    } else {
+                        cardBeingMoved.x = originalCoordinate.x;
+                        cardBeingMoved.y = originalCoordinate.y;
                     }
                 }
 

@@ -15,11 +15,11 @@ public interface CardDnDHandler {
 	/**
 	 * Called at the end of a drag'n'drop event of a card. 
 	 * @param card the card which is dragged and dropped
-	 * @param mouseCoordinate the coordinates of the mouse cursor when the mouse button was released
+	 * @param originalCoordinate the coordinates of card when the dnd event is triggered
 	 * @param newCoordinate the coordinates of the upper left corner of the card when the mouse button was released
 	 * @return the coordinate of the upper left corner of the card where the card should be placed according to this handler.
 	 * 	If the card should be placed exactly where the user dropped it, the argument <code>newCoordinate</code> must be returned.
 	 */
-    public Coordinate cardDraggedAndDropped(CardObject card, Coordinate mouseCoordinate, Coordinate newCoordinate);
+    public Coordinate cardDraggedAndDropped(CardObject card, Coordinate originalCoordinate, Coordinate newCoordinate);
     
 }

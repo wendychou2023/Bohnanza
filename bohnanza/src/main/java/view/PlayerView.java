@@ -26,33 +26,36 @@ public class PlayerView {
     Size handCompartmentSize;
     Coordinate bfImageUpperLeftCoordinate;
     Size bfImageComparmentSize;
+    Coordinate[] bfCompartmentUpperLeftCoordinate;
+    Size bfCompartmentSize;
+
     private void setupPlayerView() {
         handUpperLeftCoordinate = new Coordinate(500 * playerId, 800);
         handCompartmentSize = new Size(500, 400);
-        bfImageUpperLeftCoordinate = new Coordinate(500 * playerId, 700);
-        bfImageComparmentSize = new Size(500, 150);
+        bfImageUpperLeftCoordinate = new Coordinate(500 * playerId, 550);
+        bfImageComparmentSize = new Size(500, 250);
+        bfCompartmentSize = new Size(170, 250);
 
         handCompartment = gui.addCompartment(handUpperLeftCoordinate, handCompartmentSize, "Player " + playerId);
         beanFieldImage = gui.addCompartment(bfImageUpperLeftCoordinate, bfImageComparmentSize, "", "BOHNENFELD_ALLE");
         beanFieldCompartment = new Compartment[3];
+        bfCompartmentUpperLeftCoordinate = new Coordinate[3];
         for (int i = 0; i < beanFieldCompartment.length; i++) {
+            bfCompartmentUpperLeftCoordinate[i] = new Coordinate(500 * playerId + 170 * i, 550);
             beanFieldCompartment[i] = gui.addCompartment(
-                    new Coordinate(500 * playerId + 170 * i, 700),
-                    new Size(170, 150),
+                    bfCompartmentUpperLeftCoordinate[i],
+                    bfCompartmentSize,
                     "_" + (i + 1)
             );
         }
-        coinLabel = gui.addLabel(new Coordinate(500 * playerId, 650), "Coins: " + player.getCoins());
+        coinLabel = gui.addLabel(new Coordinate(500 * playerId, 500), "Coins: " + player.getCoins());
 
 //        updateHandView();
         updateBeanFieldView();
     }
 
     public void updateHandView(Card card) {
-        int x = 500 * playerId;
-        int y = 800;
-
-        gui.addCard(card.getCardType(), new Coordinate(x, y)).flip();
+        gui.addCard(card.getCardType(), handUpperLeftCoordinate).flip();
         arrangeCardsInCompartment(handCompartment);
     }
 
@@ -70,27 +73,32 @@ public class PlayerView {
         coinLabel.updateLabel("Coins: " + player.getCoins());
     }
 
-    public boolean toInBeanField(Coordinate coordinate) {
-        // Define the bounds of the beanFieldCompartment
-        int xMin = bfImageUpperLeftCoordinate.x;
-        int yMin = bfImageUpperLeftCoordinate.y;
-        int xMax = xMin + bfImageComparmentSize.width;
-        int yMax = yMin + bfImageComparmentSize.height;
+    private boolean withinBound(Coordinate coordinate, Coordinate compartmentCoordinate, Size compartmentSize){
+        int xMin = compartmentCoordinate.x;
+        int yMin = compartmentCoordinate.y;
+        int xMax = xMin + compartmentSize.width;
+        int yMax = yMin + compartmentSize.height;
 
-        // Check if the coordinate is within these bounds
         return coordinate.x >= xMin && coordinate.x <= xMax && coordinate.y >= yMin && coordinate.y <= yMax;
+    }
+
+    public boolean toInBeanField(Coordinate coordinate) {
+        return withinBound(coordinate, bfImageUpperLeftCoordinate,bfImageComparmentSize);
     }
 
     public boolean fromInHand(Coordinate coordinate) {
-        // Define the bounds of the beanFieldCompartment
-        int xMin = handUpperLeftCoordinate.x;
-        int yMin = handUpperLeftCoordinate.y;
-        int xMax = xMin + handCompartmentSize.width;
-        int yMax = yMin + handCompartmentSize.height;
-
-        // Check if the coordinate is within these bounds
-        return coordinate.x >= xMin && coordinate.x <= xMax && coordinate.y >= yMin && coordinate.y <= yMax;
+        return withinBound(coordinate, handUpperLeftCoordinate, handCompartmentSize);
     }
 
+    public int getPlantingSpotIdx(Coordinate coordinate){
+        int idx;
+        for(idx = 0; idx < 3; idx++){
+            if(withinBound(coordinate, bfCompartmentUpperLeftCoordinate[idx], bfCompartmentSize)){
+                break;
+            }
+        }
+
+        return idx;
+    }
 }
 

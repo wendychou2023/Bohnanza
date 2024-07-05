@@ -67,19 +67,16 @@ public class GameView implements Runnable {
         // set the handler for drag'n'drop events. With this handler:
         // - whenever a d'n'd action finishes, the dropped card is flipped (toggle whether the front or back is shown)
         // - the card is moved to the front, i.e., displayed top-most
-        gui.setCardDnDHandler((CardObject card, Coordinate mouseCoordinate, Coordinate newCoordinate) -> {
-            CardMoveEvent cardMoveEvent = new CardMoveEvent(mouseCoordinate, newCoordinate, card);
-            gameController.actionIsAllowed(cardMoveEvent);
+        gui.setCardDnDHandler((CardObject card, Coordinate originalCoordinate, Coordinate newCoordinate) -> {
+            CardMoveEvent cardMoveEvent = new CardMoveEvent(originalCoordinate, newCoordinate, card);
+            if(!gameController.actionIsAllowed(cardMoveEvent)){
+                return originalCoordinate;
+            }
             card.flip();
             gui.moveToTop(card);
+            gameController.userActionCompleted();
             return newCoordinate;
         });
-
-//        activePlayerButton = gui.addButton("Active player takes turn", new Coordinate(10, 300), new Size(200, 25), button -> {
-//            gameController.userActionCompleted();
-//            gui.setButtonEnabled(activePlayerButton, false);
-//        });
-        //gui.setButtonEnabled(activePlayerButton, false);
 
         nextPhaseButton = gui.addButton("Next phase", new Coordinate(10, 350), new Size(200, 25), button -> {
             gameController.userActionCompleted();

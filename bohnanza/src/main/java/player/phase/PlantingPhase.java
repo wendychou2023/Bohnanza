@@ -28,28 +28,35 @@ public class PlantingPhase implements Phase {
 
     }
 
+    /**
+     * @param cardMoveEvent contains from coordinate, to coordinate, and cardObject
+     * @return boolean
+     * isMoveValid checks the following:
+     * 1. from coordinate is in player's compartment
+     * 2. to coordinate belongs to player's beanfield compartment
+     * 3. if the card can be planted in the selected planting spot
+     */
     @Override
     public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
-        // we get from and to coordinates from the game controller
-        // we need to check if
-        // 1. the from coordinate is user's compartment
-        // 2. to coordinate belongs to user's beanfield compartment
-        // 3. check which planting spot the bean is planted -> return boolean
-        //      if that planting spot of the user is available to be planted
         if (!(playerView.fromInHand(cardMoveEvent.from) && playerView.toInBeanField(cardMoveEvent.to))){
             return false;
         }
 
+        int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
+//        if (player.getBeanField().canPlant(plantingSpot, cardMoveEvent.card.card)){
+//              player.getBF.plant()
+//        }
 
-
-
-
-
-        return false;
+        return true;
     }
 
     @Override
     public Phase getNextPhase() {
         return nextPhase;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
     }
 }

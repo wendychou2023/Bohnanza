@@ -72,6 +72,7 @@ public class GameController {
             activePlayer.startTurn();
             updateGUIForPhase(activePlayer);
 
+            waitForUserAction();
             processPhase(activePlayer);
 
             game.nextPlayer();
@@ -88,9 +89,8 @@ public class GameController {
         //check if the action is allowed in the current phase (call isMoveValid)
         // see how to get current phase
         Phase currentPhase = activePlayer.getCurrentPhase();
-        currentPhase.isMoveValid(cardMoveEvent);
 
-        return false;
+        return currentPhase.isMoveValid(cardMoveEvent);
     }
 
     private void processPhase(Player activePlayer) {

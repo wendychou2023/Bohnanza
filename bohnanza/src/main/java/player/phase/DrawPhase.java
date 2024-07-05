@@ -28,4 +28,9 @@ public class DrawPhase implements Phase {
     public Phase getNextPhase() {
         return nextPhase;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

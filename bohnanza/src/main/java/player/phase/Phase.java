@@ -11,4 +11,6 @@ public interface Phase {
     void endPhase(Player player);
     boolean isMoveValid(CardMoveEvent cardMoveEvent);
     Phase getNextPhase();
+    @Override
+    public String toString();
 }

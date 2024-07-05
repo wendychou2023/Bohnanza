@@ -31,4 +31,9 @@ public class TradingPhase implements Phase {
     public Phase getNextPhase() {
         return nextPhase;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }

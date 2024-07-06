@@ -8,11 +8,13 @@ import java.util.List;
 
 public class TradingAreaView {
     private final GUI gui;
+    private final GameView gameView;
     private Compartment firstTradingCompartment;
     private Compartment secondTradingCompartment;
 
-    public TradingAreaView(GUI gui) {
+    public TradingAreaView(GUI gui, GameView gameView) {
         this.gui = gui;
+        this.gameView = gameView;
         setupTradingView();
     }
 
@@ -57,9 +59,11 @@ public class TradingAreaView {
 
     Coordinate[] tradingCardCoordinates = new Coordinate[2];
     public void displayTradeCards(List<Card> tradingCards){
+        CardObject[] drawPile = gui.getCardObjectsInCompartment(gameView.getDeckView().getDrawPileCompartment());
         for (int i = 0; i < 2; i++){
             tradingCardCoordinates[i] = new Coordinate(1100 + 150 * i, 300);
-            gui.addCard(tradingCards.get(i).getCardType(), tradingCardCoordinates[i]).flip();
+            gui.moveCard(drawPile[i], tradingCardCoordinates[i]);
+            drawPile[i].flip();
         }
     }
 

@@ -4,7 +4,9 @@ import io.bitbucket.plt.sdp.bohnanza.gui.*;
 import card.Card;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DeckView {
     private final GUI gui;
@@ -42,13 +44,21 @@ public class DeckView {
         }
     }
 
-    public void displayDrawPile(List<Card> drawPile){
+
+    private static final Map<CardObject, Card> cardObjectToCardMap = new HashMap<>();
+    public Map<CardObject, Card> displayDrawPile(List<Card> drawPile){
         for (Card card : drawPile) {
-            gui.addCard(card.getCardType(), drawPilePosition);
+            CardObject cardObject = gui.addCard(card.getCardType(), drawPilePosition);
+            cardObjectToCardMap.put(cardObject, card);
         }
+        return cardObjectToCardMap;
     }
 
     public void updateDiscardPile(List<Card> discardPile) {
 
+    }
+
+    public Compartment getDrawPileCompartment(){
+        return drawPileCompartment;
     }
 }

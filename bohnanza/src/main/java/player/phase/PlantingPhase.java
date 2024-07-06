@@ -8,14 +8,19 @@ import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.BeanField;
 import player.PlantingSpot;
 import player.Player;
+import view.DeckView;
 import view.GameView;
 import view.PlayerView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlantingPhase implements Phase {
     Phase nextPhase = new TradingPhase();
     PlayerView playerView;
     GameView gameView;
     Player player;
+    Map<CardObject, Card> cardObjectToCardMap;
 
     public PlantingPhase(PlayerView playerView){
         this.playerView = playerView;
@@ -25,6 +30,7 @@ public class PlantingPhase implements Phase {
     public void startPhase(Player player, GameView gameView) {
         this.player = player;
         this.gameView = gameView;
+        cardObjectToCardMap = gameView.getCardObjectToCardMap();
     }
 
     @Override
@@ -59,25 +65,14 @@ public class PlantingPhase implements Phase {
         }
 
         int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
-        Card cardToPlant = convertToCard(cardMoveEvent.card);
+        Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);
 
-        PlantingSpot spot = player.getBeanField().getPlantingSpots().get(plantingSpot);
-        Card plantedCard = spot.getPlantedCard();
-
-
-        BeanField beanField = player.getBeanField();
-        //System.out.println(beanField.getPlantedBeans());
-
-        if (!beanField.isEmpty(plantingSpot)) {
-            Card existingCard = plantedCard;
-            //System.out.println(existingCard.getCardType() + " " + cardToPlant.getCardType());
-            if (!existingCard.getCardType().equals(cardToPlant.getCardType())) {
-                return false;
-            }
+        if (player.getBeanField().canPlant(plantingSpot, cardToPlant)){
+            player.getBeanField().plant(plantingSpot, cardToPlant);
+            return true;
+        }else{
+            return false;
         }
-        beanField.plant(plantingSpot, cardToPlant);
-        //System.out.println(beanField.getPlantedBeans());
-        return true;
     }
 
 

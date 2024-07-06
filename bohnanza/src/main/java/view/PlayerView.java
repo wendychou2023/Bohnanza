@@ -9,15 +9,18 @@ public class PlayerView {
     private final GUI gui;
     private final Player player;
     private final int playerId;
+    private DeckView deckView;
     private Compartment handCompartment;
     private Compartment[] beanFieldCompartment;
     private Compartment beanFieldImage;
     private Label coinLabel;
 
-    public PlayerView(GUI gui, Player player, int playerId) {
+    public PlayerView(GUI gui, Player player, int playerId, DeckView deckView) {
         this.gui = gui;
         this.player = player;
         this.playerId = playerId;
+        this.deckView = deckView;
+
         player.setPlayerView(this);
         setupPlayerView();
     }
@@ -55,7 +58,9 @@ public class PlayerView {
     }
 
     public void updateHandView(Card card) {
-        gui.addCard(card.getCardType(), handUpperLeftCoordinate).flip();
+        CardObject[] drawPile = gui.getCardObjectsInCompartment(deckView.getDrawPileCompartment());
+        gui.moveCard(drawPile[0], handUpperLeftCoordinate);
+        drawPile[0].flip();
         arrangeCardsInCompartment(handCompartment);
     }
 

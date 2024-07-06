@@ -7,6 +7,7 @@ import io.bitbucket.plt.sdp.bohnanza.gui.*;
 import player.Player;
 
 import java.util.List;
+import java.util.Map;
 
 public class GameView implements Runnable {
     private GameController gameController;
@@ -29,7 +30,7 @@ public class GameView implements Runnable {
         this.args = args;
         this.globalInfoView = new GlobalInfoView(gui);
         this.deckView = new DeckView(gui);
-        this.tradingAreaView = new TradingAreaView(gui);
+        this.tradingAreaView = new TradingAreaView(gui, this);
     }
 
     public void setGameController(GameController gameController) {
@@ -91,18 +92,18 @@ public class GameView implements Runnable {
     }
 
     final Size BUTTON_SIZE = new Size(100, 25);
-
+    private Map<CardObject, Card> cardObjectToCardMap;
     public void updateInitialView(List<Card> drawPile, List<Player> players, int activePlayerId){
         // Disable the start button after start
         gui.setButtonEnabled(startButton, false);
         //gui.setButtonEnabled(activePlayerButton, true);
         globalInfoView.updateGameInfo("");
 
-        deckView.displayDrawPile(drawPile);
+        cardObjectToCardMap = deckView.displayDrawPile(drawPile);
 
         playerViews = new PlayerView[players.size()];
         for (int i = 0; i < players.size(); i++) {
-            playerViews[i] = new PlayerView(gui, players.get(i), i);
+            playerViews[i] = new PlayerView(gui, players.get(i), i, deckView);
         }
     }
 
@@ -112,5 +113,9 @@ public class GameView implements Runnable {
 
     public void enableNextPhaseButton(){
         gui.setButtonEnabled(nextPhaseButton, true);
+    }
+
+    public Map<CardObject, Card> getCardObjectToCardMap() {
+        return cardObjectToCardMap;
     }
 }

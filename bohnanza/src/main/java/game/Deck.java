@@ -97,7 +97,6 @@ public class Deck {
         }
 
         Card card = drawPile.remove(0);
-        deckView.updateDrawPile(card);
         return card;
     }
 

@@ -52,9 +52,6 @@ public class PlayerView {
             );
         }
         coinLabel = gui.addLabel(new Coordinate(500 * playerId, 500), "Coins: " + player.getCoins());
-
-//        updateHandView();
-        updateBeanFieldView();
     }
 
     public void updateHandView(Card card) {
@@ -70,8 +67,11 @@ public class PlayerView {
         compartment.distributeHorizontal(cardObjects);
     }
 
-    public void updateBeanFieldView() {
-        // Logic to display cards in the bean field
+    public void updateBeanFieldView(int plantingSpotId) {
+        Compartment plantedCompartment = beanFieldCompartment[plantingSpotId];
+        CardObject[] cardObjects = gui.getCardObjectsInCompartment(plantedCompartment);
+
+        plantedCompartment.distributeVertical(cardObjects);
     }
 
     public void updateCoins() {
@@ -104,6 +104,10 @@ public class PlayerView {
         }
 
         return idx;
+    }
+
+    public Compartment getBeanFieldCompartment(int idx){
+        return beanFieldCompartment[idx];
     }
 }
 

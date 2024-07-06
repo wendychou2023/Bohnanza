@@ -3,6 +3,7 @@ package player.phase;
 import game.CardMoveEvent;
 import game.Game;
 import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
+import io.bitbucket.plt.sdp.bohnanza.gui.Compartment;
 import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.Player;
 import view.GameView;
@@ -21,8 +22,8 @@ public class DrawPhase implements Phase {
     }
 
     @Override
-    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
-        return false;
+    public Compartment isMoveValid(CardMoveEvent cardMoveEvent) {
+        return null;
     }
 
     @Override

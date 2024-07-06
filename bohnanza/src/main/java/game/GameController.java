@@ -2,6 +2,7 @@ package game;
 
 import card.Card;
 import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
+import io.bitbucket.plt.sdp.bohnanza.gui.Compartment;
 import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
 import player.Player;
@@ -169,7 +170,7 @@ public class GameController {
      * @param cardMoveEvent
      * @return
      */
-    public boolean actionIsAllowed(CardMoveEvent cardMoveEvent){
+    public Compartment actionIsAllowed(CardMoveEvent cardMoveEvent){
         Phase currentPhase = activePlayer.getCurrentPhase();
 
         return currentPhase.isMoveValid(cardMoveEvent);

@@ -1,6 +1,7 @@
 package player.phase;
 
 import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
+import io.bitbucket.plt.sdp.bohnanza.gui.Compartment;
 import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.Player;
 import game.CardMoveEvent;
@@ -10,7 +11,7 @@ import view.PlayerView;
 public interface Phase {
     void startPhase(Player player, GameView gameView);
     void endPhase(Player player);
-    boolean isMoveValid(CardMoveEvent cardMoveEvent);
+    Compartment isMoveValid(CardMoveEvent cardMoveEvent);
     boolean canEnableNextPhase();
     Phase getNextPhase();
     @Override

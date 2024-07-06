@@ -11,6 +11,7 @@ public class TradingAreaView {
     private final GameView gameView;
     private Compartment firstTradingCompartment;
     private Compartment secondTradingCompartment;
+    private int tradedCard = 0;
 
     public TradingAreaView(GUI gui, GameView gameView) {
         this.gui = gui;
@@ -30,11 +31,13 @@ public class TradingAreaView {
     Size BUTTON_SIZE = new Size(80, 25);
 
     private void setupTradingView() {
-        firstTradingCompartment = gui.addCompartment(firstTradingPosition, tradeCompartmentSize, "FirstTrading\nArea");
-        secondTradingCompartment = gui.addCompartment(secondTradingPosition, tradeCompartmentSize, "SecondTrading\nArea");
+        firstTradingCompartment = gui.addCompartment(firstTradingPosition, tradeCompartmentSize, "Active Player\nTrading Area");
+        secondTradingCompartment = gui.addCompartment(secondTradingPosition, tradeCompartmentSize, "Non Active Player\nTrading Area");
         tradeButton = gui.addButton("Trade", tradeButtonCoordinate, BUTTON_SIZE, button -> {
             tradeCard();
+            tradedCard++;
         });
+        gui.setButtonEnabled(tradeButton, false);
     }
 
     /**
@@ -47,6 +50,8 @@ public class TradingAreaView {
         if (activePlayerCard != null && nonActivePlayerCard !=null){
             gui.moveCard(activePlayerCard[0], secondTradingPosition);
             gui.moveCard(nonActivePlayerCard[0], firstTradingPosition);
+
+            gui.setButtonEnabled(tradeButton, false);
         }
     }
 
@@ -81,12 +86,37 @@ public class TradingAreaView {
         return coordinate.x >= xMin && coordinate.x <= xMax && coordinate.y >= yMin && coordinate.y <= yMax;
     }
 
-    public boolean placeAtFirstTradingCompartment(Coordinate coordinate){
+    public boolean withinFirstTradingCompartment(Coordinate coordinate){
         return withinBound(coordinate, firstTradingPosition, tradeCompartmentSize);
     }
 
-    public boolean placeAtSecondTradingCompartment(Coordinate coordinate){
-        return withinBound(coordinate, secondTradingPosition, tradeCompartmentSize);
+    public boolean withinSecondTradingCompartment(Coordinate coordinate, boolean beforeTrade){
+        boolean result = withinBound(coordinate, secondTradingPosition, tradeCompartmentSize);
+
+        if (result && beforeTrade){
+            gui.setButtonEnabled(tradeButton, true);
+        }
+
+        return result;
+    }
+
+    public int getNumOfTradedCard(){
+        return tradedCard;
+    }
+
+    public boolean compartmentsAreEmpty(){
+        CardObject[] activePlayerCard = gui.getCardObjectsInCompartment(firstTradingCompartment);
+        CardObject[] nonActivePlayerCard = gui.getCardObjectsInCompartment(secondTradingCompartment);
+
+        return activePlayerCard.length == 0 && nonActivePlayerCard.length == 0;
+    }
+
+    public Compartment getFirstTradingCompartment(){
+        return firstTradingCompartment;
+    }
+
+    public Compartment getSecondTradingCompartment(){
+        return secondTradingCompartment;
     }
 
 }

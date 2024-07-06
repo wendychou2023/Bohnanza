@@ -5,6 +5,7 @@ import game.CardMoveEvent;
 import game.Deck;
 import game.Game;
 import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
+import io.bitbucket.plt.sdp.bohnanza.gui.Compartment;
 import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.Player;
 import view.GameView;
@@ -12,6 +13,7 @@ import view.PlayerView;
 import view.TradingAreaView;
 
 import java.util.List;
+import java.util.Map;
 
 public class TradingPhase implements Phase {
     Phase nextPhase = new DrawPhase();
@@ -22,6 +24,7 @@ public class TradingPhase implements Phase {
     TradingAreaView tradingAreaView;
     PlayerView[] playerViews;
     GameView gameView;
+    Map<CardObject, Card> cardObjectToCardMap;
 
     @Override
     public void startPhase(Player player, GameView gameView) {
@@ -32,6 +35,8 @@ public class TradingPhase implements Phase {
         this.gameView = gameView;
         this.tradingAreaView = gameView.getTradingAreaView();
         this.playerViews = gameView.getPlayerViews();
+
+        this.cardObjectToCardMap = gameView.getCardObjectToCardMap();
 
         prepareForTrade();
     }
@@ -48,21 +53,33 @@ public class TradingPhase implements Phase {
 
     boolean tradingCardSelected = false;
     boolean nonActivePlayerOfferCard = false;
+    int trackNumOfTradedCard = 0;
+    int nonActivePlayerId;
     /**
      * isMoveValid checks the following:
-     * Case 1: from coordinate is one of the two trading cards & to coordinate is the first trading compartment
-     * Case 2: from coordinate is one of the player compartment & to coordinate is the second trading compartment
+     * Case 1: Players place trading card
+     *    a. from coordinate is one of the two trading cards & to coordinate is the first trading compartment
+     *    b. from coordinate is one of the player compartment & to coordinate is the second trading compartment
      * Only allows players to trade one card at a time.
+     * Case 2: Players plant card after trading
      *
      * @param cardMoveEvent contains from coordinate, to coordinate, and cardObject
      * @return boolean
      */
     @Override
-    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
+    public Compartment isMoveValid(CardMoveEvent cardMoveEvent) {
+        if(trackNumOfTradedCard == tradingAreaView.getNumOfTradedCard() - 1
+                && tradingAreaView.compartmentsAreEmpty()){
+            trackNumOfTradedCard++;
+            tradingCardSelected = false;
+            nonActivePlayerOfferCard = false;
+        }
+
+        // Case 1a
         if (!tradingCardSelected && tradingAreaView.tradingCardMoved(cardMoveEvent.from)
-                && tradingAreaView.placeAtFirstTradingCompartment(cardMoveEvent.to)){
+                && tradingAreaView.withinFirstTradingCompartment(cardMoveEvent.to)){
             tradingCardSelected = true;
-            return true;
+            return tradingAreaView.getFirstTradingCompartment();
         }
 
         boolean fromNonActivePlayerHand = false;
@@ -72,22 +89,53 @@ public class TradingPhase implements Phase {
             }
 
             if (fromNonActivePlayerHand){
+                nonActivePlayerId = i;
                 break;
             }
         }
 
+        // Case 1b
         if (!nonActivePlayerOfferCard && tradingCardSelected && fromNonActivePlayerHand &&
-                tradingAreaView.placeAtSecondTradingCompartment(cardMoveEvent.to)){
+                tradingAreaView.withinSecondTradingCompartment(cardMoveEvent.to, true)){
             nonActivePlayerOfferCard = true;
-            return true;
+            return tradingAreaView.getSecondTradingCompartment();
         }
 
-        return false;
+        // Case 2
+        if (trackNumOfTradedCard == tradingAreaView.getNumOfTradedCard() - 1
+                && !tradingAreaView.compartmentsAreEmpty()){
+            if (tradingAreaView.withinFirstTradingCompartment(cardMoveEvent.from)
+                    && playerViews[player.getPlayerId()].toInBeanField(cardMoveEvent.to)) {
+                return canPlant(player, playerViews[player.getPlayerId()], cardMoveEvent);
+            } else if (tradingAreaView.withinSecondTradingCompartment(cardMoveEvent.from, false)
+                    && playerViews[nonActivePlayerId].toInBeanField(cardMoveEvent.to)) {
+                return canPlant(game.getPlayers().get(nonActivePlayerId), playerViews[nonActivePlayerId], cardMoveEvent);
+            }
+        }
+
+        return null;
+    }
+
+    private Compartment canPlant(Player plantingPlayer, PlayerView playerView, CardMoveEvent cardMoveEvent){
+        int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
+        Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);
+
+        if (plantingSpot >= plantingPlayer.getBeanField().getNumberOfFields()){
+            return null;
+        }
+
+        if (plantingPlayer.getBeanField().canPlant(plantingSpot, cardToPlant)){
+            plantingPlayer.getBeanField().plant(plantingSpot, cardToPlant);
+            playerView.updateBeanFieldView(plantingSpot);
+            return playerView.getBeanFieldCompartment(plantingSpot);
+        }else{
+            return null;
+        }
     }
 
     @Override
     public boolean canEnableNextPhase() {
-        return true;
+        return (trackNumOfTradedCard == 1 || trackNumOfTradedCard == 2) && tradingAreaView.compartmentsAreEmpty();
     }
 
     @Override

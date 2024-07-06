@@ -96,7 +96,8 @@ public class Compartment {
         int[] yPositions = Compartment.distribute(cardHeights, getVStart(), getVEnd());
 
     	for (int i = 0; i < yPositions.length; i++) {
-    		cards[i].y = yPositions[i];
+			cards[i].x = upperLeft.x + size.width / 2 - cards[i].getImage().getBounds().width / 2;
+			cards[i].y = yPositions[i];
     	}
         gui.redrawDisplay();
     }

@@ -74,12 +74,17 @@ public class GameView implements Runnable {
         // - the card is moved to the front, i.e., displayed top-most
         gui.setCardDnDHandler((CardObject card, Coordinate originalCoordinate, Coordinate newCoordinate) -> {
             CardMoveEvent cardMoveEvent = new CardMoveEvent(originalCoordinate, newCoordinate, card);
-            if(!gameController.actionIsAllowed(cardMoveEvent)){
+            Compartment newCompartment = gameController.actionIsAllowed(cardMoveEvent);
+            if(newCompartment == null){
                 return originalCoordinate;
             }
             card.flip();
-            gui.moveToTop(card);
+//            gui.moveToTop(card);
             gameController.userActionCompleted();
+
+//            CardObject[] cardObjects = gui.getCardObjectsInCompartment(newCompartment);
+////            newCompartment.centerVertical(cardObjects);
+//            newCompartment.distributeVertical(cardObjects);
             return newCoordinate;
         });
 

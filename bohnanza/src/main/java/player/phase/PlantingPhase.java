@@ -4,6 +4,7 @@ import card.Card;
 import game.CardMoveEvent;
 import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
 import io.bitbucket.plt.sdp.bohnanza.gui.CardType;
+import io.bitbucket.plt.sdp.bohnanza.gui.Compartment;
 import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
 import player.BeanField;
 import player.PlantingSpot;
@@ -61,29 +62,30 @@ public class PlantingPhase implements Phase {
      * Case 4: if the card can be planted in the selected planting spot
      */
     @Override
-    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
+    public Compartment isMoveValid(CardMoveEvent cardMoveEvent) {
         if (numOfPlantedCard == 2){
-            return false;
+            return null;
         }
 
         if (!(playerView.fromInHand(cardMoveEvent.from) && playerView.toInBeanField(cardMoveEvent.to))) {
-            return false;
+            return null;
         }
 
         int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
         Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);
 
         if (cardToPlant != player.getHandCards().get(0) || plantingSpot >= player.getBeanField().getNumberOfFields()){
-            return false;
+            return null;
         }
 
         if (player.getBeanField().canPlant(plantingSpot, cardToPlant)){
             player.getBeanField().plant(plantingSpot, cardToPlant);
             player.popFromHand();
             numOfPlantedCard++;
-            return true;
+            playerView.updateBeanFieldView(plantingSpot);
+            return playerView.getBeanFieldCompartment(plantingSpot);
         }else{
-            return false;
+            return null;
         }
     }
 

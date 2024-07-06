@@ -27,6 +27,13 @@ public class BeanField {
     public boolean canPlant(int plantingSpotIdx, Card card) {
         return plantingSpots.get(plantingSpotIdx).canPlant(card);
     }
+    public Card getCard(int plantingSpot) {
+        // Access some property or method of BeanField to get the card in the planting spot
+        // This is just a placeholder, replace with your actual logic
+        PlantingSpot spot = this.plantingSpots.get(plantingSpot);
+        Card card = spot.getCard();
+        return card;
+    }
 
     /**
      * plant a bean in a field

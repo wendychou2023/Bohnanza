@@ -5,6 +5,7 @@ import card.Card;
 public class PlantingSpot {
     private int numberOfBeans;
     private Card plantedCard = null;
+    private Card card;
 
     public Card getPlantedCard() {
         return plantedCard;
@@ -41,5 +42,13 @@ public class PlantingSpot {
                 "plantedCard=" + plantedCard + ", " +
                 "numberOfBeans=" + numberOfBeans +
                 '}';
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
     }
 }

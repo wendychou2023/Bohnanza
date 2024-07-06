@@ -10,15 +10,16 @@ import view.GameView;
 
 public class DrawPhase implements Phase {
     Phase nextPhase = null; // no next phase
+    Game game;
 
     @Override
     public void startPhase(Player player, GameView gameView) {
-
+        game = Game.getInstance();
+        player.addToHand(game.getDeck().drawN(3));
     }
 
     @Override
     public void endPhase(Player player) {
-
     }
 
     @Override

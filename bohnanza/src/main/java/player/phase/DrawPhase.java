@@ -26,6 +26,11 @@ public class DrawPhase implements Phase {
     }
 
     @Override
+    public boolean canEnableNextPhase() {
+        return true;
+    }
+
+    @Override
     public Phase getNextPhase() {
         return nextPhase;
     }

@@ -86,6 +86,11 @@ public class TradingPhase implements Phase {
     }
 
     @Override
+    public boolean canEnableNextPhase() {
+        return true;
+    }
+
+    @Override
     public Phase getNextPhase() {
         return nextPhase;
     }

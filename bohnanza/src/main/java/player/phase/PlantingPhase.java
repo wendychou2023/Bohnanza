@@ -75,6 +75,11 @@ public class PlantingPhase implements Phase {
         }
     }
 
+    @Override
+    public boolean canEnableNextPhase() {
+        return true;
+    }
+
 
     @Override
     public Phase getNextPhase() {

@@ -86,6 +86,14 @@ public class GameController {
             updateGUIForPhase(activePlayer);
             waitForUserAction();
 
+            while(!activePlayer.getCurrentPhase().canEnableNextPhase()){
+                try {
+                    Thread.sleep(100); // Check every 100 ms
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             gameView.enableNextPhaseButton();
             waitNextPhaseButtonClicked();
             activePlayer.endPhaseAndStartNext(gameView);

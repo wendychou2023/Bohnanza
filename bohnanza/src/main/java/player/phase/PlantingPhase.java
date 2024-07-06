@@ -21,6 +21,7 @@ public class PlantingPhase implements Phase {
     GameView gameView;
     Player player;
     Map<CardObject, Card> cardObjectToCardMap;
+    int numOfPlantedCard = 0;
 
     public PlantingPhase(PlayerView playerView){
         this.playerView = playerView;
@@ -30,7 +31,7 @@ public class PlantingPhase implements Phase {
     public void startPhase(Player player, GameView gameView) {
         this.player = player;
         this.gameView = gameView;
-        cardObjectToCardMap = gameView.getCardObjectToCardMap();
+        this.cardObjectToCardMap = gameView.getCardObjectToCardMap();
     }
 
     @Override
@@ -54,12 +55,17 @@ public class PlantingPhase implements Phase {
      * @param cardMoveEvent contains from coordinate, to coordinate, and cardObject
      * @return boolean
      * isMoveValid checks the following:
-     * 1. from coordinate is in player's compartment
-     * 2. to coordinate belongs to player's beanfield compartment
-     * 3. if the card can be planted in the selected planting spot
+     * Case 1: player can only plant maximum 2 cards
+     * Case 2: from coordinate is in player's compartment & to coordinate belongs to player's beanfield compartment
+     * Case 3: Planted card is the first card in player's handcard
+     * Case 4: if the card can be planted in the selected planting spot
      */
     @Override
     public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
+        if (numOfPlantedCard == 2){
+            return false;
+        }
+
         if (!(playerView.fromInHand(cardMoveEvent.from) && playerView.toInBeanField(cardMoveEvent.to))) {
             return false;
         }
@@ -67,8 +73,14 @@ public class PlantingPhase implements Phase {
         int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
         Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);
 
+        if (cardToPlant != player.getHandCards().get(0)){
+            return false;
+        }
+
         if (player.getBeanField().canPlant(plantingSpot, cardToPlant)){
             player.getBeanField().plant(plantingSpot, cardToPlant);
+            player.popFromHand();
+            numOfPlantedCard++;
             return true;
         }else{
             return false;
@@ -77,7 +89,7 @@ public class PlantingPhase implements Phase {
 
     @Override
     public boolean canEnableNextPhase() {
-        return true;
+        return numOfPlantedCard >= 1;
     }
 
 

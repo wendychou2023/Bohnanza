@@ -73,7 +73,7 @@ public class PlantingPhase implements Phase {
         int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
         Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);
 
-        if (cardToPlant != player.getHandCards().get(0)){
+        if (cardToPlant != player.getHandCards().get(0) || plantingSpot >= player.getBeanField().getNumberOfFields()){
             return false;
         }
 

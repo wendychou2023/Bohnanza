@@ -106,7 +106,8 @@ public class GameController {
      * @param activePlayer
      */
     private void updateGUIForPhase(Player activePlayer) {
-        globalInfoView.updatePlayerInfo("Active player: " + game.getActivePlayerID() + " ("+ activePlayer.getCurrentPhase() + ")");
+        globalInfoView.updatePlayerInfo("Active player: " + game.getActivePlayerID() + " ("+ activePlayer.getCurrentPhase() + ", Number of planting spots: "
+                + activePlayer.getBeanField().getNumberOfFields() + ")");
     }
 
     private void waitForUserAction() {

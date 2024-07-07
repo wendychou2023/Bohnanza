@@ -30,7 +30,9 @@ public class PlayerView {
     Coordinate bfImageUpperLeftCoordinate;
     Size bfImageComparmentSize;
     Coordinate[] bfCompartmentUpperLeftCoordinate;
+    Button[] harvestButtons;
     Size bfCompartmentSize;
+    Size BUTTON_SIZE = new Size(70, 25);
 
     private void setupPlayerView() {
         handUpperLeftCoordinate = new Coordinate(500 * playerId, 800);
@@ -51,7 +53,29 @@ public class PlayerView {
                     "_" + (i + 1)
             );
         }
+
+        harvestButtons = new Button[3];
+        for(int i = 0; i < beanFieldCompartment.length; i++){
+            int finalI = i;
+            harvestButtons[i] = gui.addButton("harvest", new Coordinate(500 * playerId + 170 * i, 525), BUTTON_SIZE, button -> {
+                int plantingSpotIdx = finalI;
+                if(player.getBeanField().canHarvest(plantingSpotIdx)){
+                    player.getBeanField().harvest(plantingSpotIdx);
+                    // discard card
+                    CardObject[] cardsInPlantingSpot = gui.getCardObjectsInCompartment(beanFieldCompartment[plantingSpotIdx]);
+                    for (CardObject discardedCard: cardsInPlantingSpot){
+                        gui.moveCard(discardedCard, deckView.getDiscardPilePosition());
+                    }
+                    updateCoinLabel();
+                }
+            });
+        }
+
         coinLabel = gui.addLabel(new Coordinate(500 * playerId, 500), "Coins: " + player.getCoins());
+    }
+
+    private void updateCoinLabel(){
+        coinLabel.updateLabel("Coins: " + player.getCoins());
     }
 
     public void updateHandView(Card card) {

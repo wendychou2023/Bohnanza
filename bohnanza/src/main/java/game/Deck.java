@@ -129,6 +129,7 @@ public class Deck {
 
     public void discardN(List<Card> cards) {
         discardPile.addAll(cards);
+        deckView.updateDiscardPile(cards);
     }
 
     public void discardN(Card card, int n) {

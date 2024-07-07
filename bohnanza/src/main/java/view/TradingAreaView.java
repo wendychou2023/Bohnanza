@@ -119,4 +119,8 @@ public class TradingAreaView {
         return secondTradingCompartment;
     }
 
+    public void setTradedCard(){
+        tradedCard = 0;
+    }
+
 }

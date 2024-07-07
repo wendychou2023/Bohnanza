@@ -79,8 +79,8 @@ public class Player {
         }
     }
 
-    public Card popFromHand() {
-        return handCards.remove(0);
+    public Card popFromHand(int idx) {
+        return handCards.remove(idx);
     }
 
     /**

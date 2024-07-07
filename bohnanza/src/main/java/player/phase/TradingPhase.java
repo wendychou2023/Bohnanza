@@ -38,6 +38,8 @@ public class TradingPhase implements Phase {
 
         this.cardObjectToCardMap = gameView.getCardObjectToCardMap();
 
+        tradingAreaView.setTradedCard();
+
         prepareForTrade();
     }
 
@@ -55,6 +57,7 @@ public class TradingPhase implements Phase {
     boolean nonActivePlayerOfferCard = false;
     int trackNumOfTradedCard = 0;
     int nonActivePlayerId;
+    int offeredCardIdx;
     /**
      * isMoveValid checks the following:
      * Case 1: Players place trading card
@@ -67,7 +70,7 @@ public class TradingPhase implements Phase {
      * @return boolean
      */
     @Override
-    public Compartment isMoveValid(CardMoveEvent cardMoveEvent) {
+    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
         if(trackNumOfTradedCard == tradingAreaView.getNumOfTradedCard() - 1
                 && tradingAreaView.compartmentsAreEmpty()){
             trackNumOfTradedCard++;
@@ -79,7 +82,7 @@ public class TradingPhase implements Phase {
         if (!tradingCardSelected && tradingAreaView.tradingCardMoved(cardMoveEvent.from)
                 && tradingAreaView.withinFirstTradingCompartment(cardMoveEvent.to)){
             tradingCardSelected = true;
-            return tradingAreaView.getFirstTradingCompartment();
+            return true;
         }
 
         boolean fromNonActivePlayerHand = false;
@@ -98,7 +101,19 @@ public class TradingPhase implements Phase {
         if (!nonActivePlayerOfferCard && tradingCardSelected && fromNonActivePlayerHand &&
                 tradingAreaView.withinSecondTradingCompartment(cardMoveEvent.to, true)){
             nonActivePlayerOfferCard = true;
-            return tradingAreaView.getSecondTradingCompartment();
+
+            Player nonActivePlayer = game.getPlayers().get(nonActivePlayerId);
+            Card cardMoved = cardObjectToCardMap.get(cardMoveEvent.card);
+            Card handCard;
+            for (int j = 0; j < nonActivePlayer.getHandCards().size(); j++){
+                handCard = nonActivePlayer.getHandCards().get(j);
+                if (cardMoved == handCard){
+                    offeredCardIdx = j;
+                    break;
+                }
+            }
+
+            return true;
         }
 
         // Case 2
@@ -109,27 +124,32 @@ public class TradingPhase implements Phase {
                 return canPlant(player, playerViews[player.getPlayerId()], cardMoveEvent);
             } else if (tradingAreaView.withinSecondTradingCompartment(cardMoveEvent.from, false)
                     && playerViews[nonActivePlayerId].toInBeanField(cardMoveEvent.to)) {
-                return canPlant(game.getPlayers().get(nonActivePlayerId), playerViews[nonActivePlayerId], cardMoveEvent);
+                Player nonActivePlayer = game.getPlayers().get(nonActivePlayerId);
+                boolean result = canPlant(nonActivePlayer, playerViews[nonActivePlayerId], cardMoveEvent);
+                if (result){
+                    nonActivePlayer.popFromHand(offeredCardIdx);
+                }
+                return result;
             }
         }
 
-        return null;
+        return false;
     }
 
-    private Compartment canPlant(Player plantingPlayer, PlayerView playerView, CardMoveEvent cardMoveEvent){
+    private boolean canPlant(Player plantingPlayer, PlayerView playerView, CardMoveEvent cardMoveEvent){
         int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
         Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);
 
         if (plantingSpot >= plantingPlayer.getBeanField().getNumberOfFields()){
-            return null;
+            return false;
         }
 
         if (plantingPlayer.getBeanField().canPlant(plantingSpot, cardToPlant)){
             plantingPlayer.getBeanField().plant(plantingSpot, cardToPlant);
             playerView.updateBeanFieldView(plantingSpot);
-            return playerView.getBeanFieldCompartment(plantingSpot);
+            return true;
         }else{
-            return null;
+            return false;
         }
     }
 

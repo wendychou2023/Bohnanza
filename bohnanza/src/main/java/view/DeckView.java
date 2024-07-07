@@ -61,4 +61,8 @@ public class DeckView {
     public Compartment getDrawPileCompartment(){
         return drawPileCompartment;
     }
+
+    public Coordinate getDiscardPilePosition(){
+        return discardPilePosition;
+    }
 }

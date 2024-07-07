@@ -23,8 +23,8 @@ public class DrawPhase implements Phase {
     }
 
     @Override
-    public Compartment isMoveValid(CardMoveEvent cardMoveEvent) {
-        return null;
+    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
+        return false;
     }
 
     @Override

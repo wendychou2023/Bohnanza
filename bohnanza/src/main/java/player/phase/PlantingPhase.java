@@ -62,30 +62,30 @@ public class PlantingPhase implements Phase {
      * Case 4: if the card can be planted in the selected planting spot
      */
     @Override
-    public Compartment isMoveValid(CardMoveEvent cardMoveEvent) {
+    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
         if (numOfPlantedCard == 2){
-            return null;
+            return false;
         }
 
         if (!(playerView.fromInHand(cardMoveEvent.from) && playerView.toInBeanField(cardMoveEvent.to))) {
-            return null;
+            return false;
         }
 
         int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);
         Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);
 
         if (cardToPlant != player.getHandCards().get(0) || plantingSpot >= player.getBeanField().getNumberOfFields()){
-            return null;
+            return false;
         }
 
         if (player.getBeanField().canPlant(plantingSpot, cardToPlant)){
             player.getBeanField().plant(plantingSpot, cardToPlant);
-            player.popFromHand();
+            player.popFromHand(0);
             numOfPlantedCard++;
             playerView.updateBeanFieldView(plantingSpot);
-            return playerView.getBeanFieldCompartment(plantingSpot);
+            return true;
         }else{
-            return null;
+            return false;
         }
     }
 

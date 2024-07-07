@@ -13,7 +13,6 @@ import java.util.List;
 
 public class Player {
     private Phase currentPhase = null;
-    private GameController gameController;
     private final List<Card> handCards;
     private final BeanField beanField;
     private int coins = 0;
@@ -30,9 +29,6 @@ public class Player {
         this.playerView = playerView;
     }
 
-    public PlayerView getPlayerView(){
-        return playerView;
-    }
 
     public List<Card> getHandCards() {
         return handCards;
@@ -42,14 +38,6 @@ public class Player {
 
     public Phase getCurrentPhase(){
         return currentPhase;
-    }
-
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
-    }
-
-    public GameController getGameController() {
-        return gameController;
     }
 
     public int getPlayerId(){

@@ -14,7 +14,6 @@ public class Game {
 
     private final List<Player> players;
     private final Deck deck;
-    private final TradingArea tradingArea;
 
     private int activePlayerID = 0;
     private int currentRound = 0;
@@ -27,7 +26,6 @@ public class Game {
 
     private Game() {
         this.deck = new Deck();
-        this.tradingArea = new TradingArea();
         this.players = new LinkedList<>();
     }
 
@@ -62,9 +60,6 @@ public class Game {
         return currentRound;
     }
 
-    public TradingArea getTradingArea() {
-        return tradingArea;
-    }
 
     void setupPlayers() {
         //give each player 5 cards
@@ -73,7 +68,6 @@ public class Game {
 
             //draw 5 cards for each player
             player.addToHand(deck.drawN(5));
-            player.setGameController(gameController);
 
             //set number of beanfields
             player.getBeanField().addBeanfields(numberOfBeanfields);

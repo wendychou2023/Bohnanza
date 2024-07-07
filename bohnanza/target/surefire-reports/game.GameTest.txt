@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: game.GameTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 4, Skipped: 0, Time elapsed: 0.483 s <<< FAILURE! - in null
+game.GameTest.testSetupThreePlayers  Time elapsed: 0.47 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameTest.setUp(GameTest.java:28)
+
+game.GameTest.testSetupMoreThanThreePlayers  Time elapsed: 0.003 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameTest.setUp(GameTest.java:28)
+
+game.GameTest.testAddPlayer  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameTest.setUp(GameTest.java:28)
+
+game.GameTest.testInitialization  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameTest.setUp(GameTest.java:28)
+

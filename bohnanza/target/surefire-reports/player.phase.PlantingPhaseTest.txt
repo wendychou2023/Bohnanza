@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: player.phase.PlantingPhaseTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.107 s <<< FAILURE! - in null
+player.phase.PlantingPhaseTest.testIsMoveValid_SuccessfulPlant  Time elapsed: 0.003 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at player.phase.PlantingPhaseTest.testIsMoveValid_SuccessfulPlant(PlantingPhaseTest.java:117)
+

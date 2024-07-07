@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Player.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">player</a> &gt; <span class="el_source">Player.java</span></div><h1>Player.java</h1><pre class="source lang-java linenums">package player;
+
+import card.Card;
+import game.GameController;
+import org.apache.commons.lang3.NotImplementedException;
+import player.phase.Phase;
+import player.phase.PlantingPhase;
+import view.GameView;
+import view.PlayerView;
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class Player {
+<span class="fc" id="L15">    private Phase currentPhase = null;</span>
+    private final List&lt;Card&gt; handCards;
+    private final BeanField beanField;
+<span class="fc" id="L18">    private int coins = 0;</span>
+    private PlayerView playerView;
+    private int playerId;
+
+<span class="fc" id="L22">    public Player(int playerId) {</span>
+<span class="fc" id="L23">        this.playerId = playerId;</span>
+<span class="fc" id="L24">        this.handCards = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L25">        this.beanField = new BeanField(this);</span>
+<span class="fc" id="L26">    }</span>
+
+    public void setPlayerView(PlayerView playerView){
+<span class="nc" id="L29">        this.playerView = playerView;</span>
+<span class="nc" id="L30">    }</span>
+
+
+    public List&lt;Card&gt; getHandCards() {
+<span class="nc" id="L34">        return handCards;</span>
+    }
+
+<span class="fc" id="L37">    public BeanField getBeanField() {return beanField;}</span>
+
+    public Phase getCurrentPhase(){
+<span class="nc" id="L40">        return currentPhase;</span>
+    }
+
+    public int getPlayerId(){
+<span class="nc" id="L44">        return playerId;</span>
+    }
+
+    public int getCoins() {
+<span class="fc" id="L48">        return coins;</span>
+    }
+
+    public void addCoins(int coins) {
+<span class="fc" id="L52">        this.coins += coins;</span>
+<span class="fc" id="L53">    }</span>
+
+    public void removeCoins(int coins) {
+<span class="fc" id="L56">        this.coins -= coins;</span>
+<span class="fc" id="L57">    }</span>
+
+    public void addToHand(Card card) {
+<span class="nc" id="L60">        handCards.add(card);</span>
+<span class="nc" id="L61">        playerView.updateHandView(card);</span>
+<span class="nc" id="L62">    }</span>
+
+    public void addToHand(List&lt;Card&gt; cards) {
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        for (Card card: cards) {</span>
+<span class="nc" id="L66">            addToHand(card);</span>
+<span class="nc" id="L67">        }</span>
+<span class="nc" id="L68">    }</span>
+
+    public Card popFromHand(int idx) {
+<span class="nc" id="L71">        return handCards.remove(idx);</span>
+    }
+
+    /**
+     * starts the planting phase
+     */
+    public void startPlantingPhase(GameView gameView) {
+        // inactive players usually have phase == null
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (currentPhase == null) {</span>
+<span class="nc" id="L80">            currentPhase = new PlantingPhase(playerView);</span>
+        }
+<span class="nc" id="L82">        currentPhase.startPhase(this, gameView);</span>
+<span class="nc" id="L83">    }</span>
+
+    /**
+     * ends the current phase and starts the next phase if there is one
+     */
+    public boolean endPhaseAndStartNext(GameView gameView) {
+<span class="nc" id="L89">        currentPhase.endPhase(this);</span>
+
+        // start next phase
+<span class="nc" id="L92">        currentPhase = currentPhase.getNextPhase();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        if (currentPhase != null) {</span>
+<span class="nc" id="L94">            currentPhase.startPhase(this, gameView);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            return currentPhase != null;</span>
+        } else {
+<span class="nc" id="L97">            throw new NotImplementedException(&quot;End of turn not implemented&quot;);</span>
+            // notify game that turn has ended
+            // game.endTurn(); or sth like that
+            // if using game: add game field, remove gamecontroller field from player
+
+            // possibly use gamecontroller but this really is a game logic thing
+        }
+    }
+
+    // use endPhaseAndStartNext() instead
+/*
+    public boolean executeNextPhase() {
+        if (currentPhase != null) {
+            currentPhase.doPhase(this);
+            currentPhase = currentPhase.getNextPhase();
+            return currentPhase != null;
+        }
+        return false;
+    }
+*/
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,32 @@
+-------------------------------------------------------------------------------
+Test set: game.GameControllerTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 7, Skipped: 0, Time elapsed: 0.014 s <<< FAILURE! - in null
+game.GameControllerTest.testUserUpdateHandCard  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameControllerTest.setUp(GameControllerTest.java:27)
+
+game.GameControllerTest.testUserClickStart  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameControllerTest.setUp(GameControllerTest.java:27)
+
+game.GameControllerTest.testStart  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameControllerTest.setUp(GameControllerTest.java:27)
+
+game.GameControllerTest.testUpdatePlayerInfo  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameControllerTest.setUp(GameControllerTest.java:27)
+
+game.GameControllerTest.testUserActionCompleted  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameControllerTest.setUp(GameControllerTest.java:27)
+
+game.GameControllerTest.testStartLessThanThree  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameControllerTest.setUp(GameControllerTest.java:27)
+
+game.GameControllerTest.testUpdateGameInfo  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "game.Deck.setDeckView(view.DeckView)" because the return value of "game.Game.getDeck()" is null
+	at game.GameControllerTest.setUp(GameControllerTest.java:27)
+

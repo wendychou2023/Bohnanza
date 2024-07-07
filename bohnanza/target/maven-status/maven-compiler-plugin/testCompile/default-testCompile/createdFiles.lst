@@ -1,0 +1,10 @@
+DemoTest.class
+game/GameTest.class
+game/GameControllerTest.class
+player/PlayerTest.class
+player/BeanFieldTest.class
+game/DeckTest.class
+player/phase/DrawPhaseTest.class
+player/phase/TradingPhaseTest.class
+player/PlantingSpotTest.class
+player/phase/PlantingPhaseTest.class

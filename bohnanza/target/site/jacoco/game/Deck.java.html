@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Deck.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">Deck.java</span></div><h1>Deck.java</h1><pre class="source lang-java linenums">package game;
+
+import card.Card;
+import card.BlackEyedBean;
+import card.BlueBean;
+import card.ChiliBean;
+import card.GardenBean;
+import card.GreenBean;
+import card.RedBean;
+import card.SoyBean;
+import card.StinkBean;
+import player.NotEnaughCardsException;
+import view.DeckView;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Deck {
+<span class="fc" id="L20">    private final List&lt;Card&gt; drawPile = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L21">    private final List&lt;Card&gt; discardPile = new LinkedList&lt;&gt;();</span>
+    private DeckView deckView;
+
+<span class="fc" id="L24">    protected Deck() {</span>
+        //init drawpile with appropriate amouts of each card
+        //and then shuffle it
+
+        //add 2ßx BlueBean
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (int i = 0; i &lt; 20; i++) {</span>
+<span class="fc" id="L30">            drawPile.add(new BlueBean());</span>
+        }
+        //add 18x ChiliBean
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        for (int i = 0; i &lt; 18; i++) {</span>
+<span class="fc" id="L34">            drawPile.add(new ChiliBean());</span>
+        }
+        //add 16x StinkBean
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        for (int i = 0; i &lt; 16; i++) {</span>
+<span class="fc" id="L38">            drawPile.add(new StinkBean());</span>
+        }
+        //add 14x GreenBean
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        for (int i = 0; i &lt; 14; i++) {</span>
+<span class="fc" id="L42">            drawPile.add(new GreenBean());</span>
+        }
+        //add 12x SoyBean
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 0; i &lt; 12; i++) {</span>
+<span class="fc" id="L46">            drawPile.add(new SoyBean());</span>
+        }
+        //add 10x BlackEyedBean
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        for (int i = 0; i &lt; 10; i++) {</span>
+<span class="fc" id="L50">            drawPile.add(new BlackEyedBean());</span>
+        }
+        //add 8x RedBean
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (int i = 0; i &lt; 8; i++) {</span>
+<span class="fc" id="L54">            drawPile.add(new RedBean());</span>
+        }
+        //add 6x GardenBean
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        for (int i = 0; i &lt; 6; i++) {</span>
+<span class="fc" id="L58">            drawPile.add(new GardenBean());</span>
+        }
+
+<span class="fc" id="L61">        shuffleDrawPile();</span>
+<span class="fc" id="L62">    }</span>
+
+    public void setDeckView(DeckView deckView) {
+<span class="nc" id="L65">        this.deckView = deckView;</span>
+<span class="nc" id="L66">    }</span>
+
+    public List&lt;Card&gt; getDrawPile() {
+<span class="fc" id="L69">        return drawPile;</span>
+    }
+
+    public List&lt;Card&gt; getDiscardPile() {
+<span class="fc" id="L73">        return discardPile;</span>
+    }
+
+    public void shuffleDrawPile() {
+<span class="fc" id="L77">        Collections.shuffle(drawPile);</span>
+<span class="fc" id="L78">    }</span>
+
+    public void shuffleDiscardPile() {
+<span class="nc" id="L81">        Collections.shuffle(discardPile);</span>
+<span class="nc" id="L82">    }</span>
+
+    /**
+     * if trying to draw but draw pile has too few cards
+     * start next turn
+     * @return card drawn from drawPile
+     */
+    public Card draw() throws Exception {
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        if (drawPile.isEmpty()) {</span>
+<span class="nc" id="L91">            refillDrawPile();</span>
+        }
+
+        // Still no cards in draw pile
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (drawPile.isEmpty()) {</span>
+<span class="nc" id="L96">            throw new NotEnaughCardsException();</span>
+        }
+
+<span class="fc" id="L99">        Card card = drawPile.remove(0);</span>
+<span class="fc" id="L100">        return card;</span>
+    }
+
+    /**
+     * Try to draw n cards from drawPile
+     * If draw pile has too few cards and this is not the last round,
+     * triggers new round, refills draw pile and continues drawing.
+     * If this is the last round, the returned list may be smaller than n
+     * @param n number of cards to draw
+     * @return list of cards drawn, may be smaller than n
+     */
+    public List&lt;Card&gt; drawN(int n) {
+<span class="fc" id="L112">        List&lt;Card&gt; output = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+            try {
+<span class="fc" id="L115">                Card card = draw();</span>
+<span class="fc" id="L116">                output.add(card);</span>
+<span class="nc" id="L117">            } catch (NotEnaughCardsException e) {</span>
+<span class="nc" id="L118">                break;</span>
+<span class="nc" id="L119">            } catch (Exception e) {</span>
+<span class="nc" id="L120">                throw new RuntimeException(e);</span>
+<span class="fc" id="L121">            }</span>
+        }
+<span class="fc" id="L123">        return output;</span>
+    }
+
+    public void discard(Card card) {
+<span class="fc" id="L127">        discardPile.add(card);</span>
+<span class="fc" id="L128">    }</span>
+
+    public void discardN(List&lt;Card&gt; cards) {
+<span class="fc" id="L131">        discardPile.addAll(cards);</span>
+<span class="nc" id="L132">        deckView.updateDiscardPile(cards);</span>
+<span class="nc" id="L133">    }</span>
+
+    public void discardN(Card card, int n) {
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="fc" id="L137">            discard(card);</span>
+        }
+<span class="fc" id="L139">    }</span>
+
+    /**
+     * Refill draw pile with discard pile
+     * shuffle draw pile
+     * Notify game.Game that next round started
+     */
+    public void refillDrawPile() {
+        //notify game that next round started
+<span class="fc" id="L148">        Game.getInstance().nextRound();</span>
+
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (Game.getInstance().getCurrentRound() &gt;= Game.getInstance().MAX_ROUNDS) {</span>
+            // no new cards, game has ended
+<span class="nc" id="L152">            return;</span>
+        }
+
+<span class="fc" id="L155">        drawPile.addAll(discardPile);</span>
+<span class="fc" id="L156">        discardPile.clear();</span>
+<span class="fc" id="L157">        shuffleDrawPile();</span>
+<span class="fc" id="L158">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

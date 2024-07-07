@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">GameView.java</span></div><h1>GameView.java</h1><pre class="source lang-java linenums">package view;
+
+import card.Card;
+import game.CardMoveEvent;
+import game.GameController;
+import io.bitbucket.plt.sdp.bohnanza.gui.*;
+import player.Player;
+
+import java.util.List;
+import java.util.Map;
+
+public class GameView implements Runnable {
+    private GameController gameController;
+    private final GUI gui;
+    private final GlobalInfoView globalInfoView;
+    private final DeckView deckView;
+    private PlayerView[] playerViews;
+    private TradingAreaView tradingAreaView;
+
+
+    @SuppressWarnings(&quot;unused&quot;)
+    private final String[] args;
+    private Button startButton;
+    private Button activePlayerButton;
+    private Button nextPhaseButton;
+
+    public GameView(GUI gui, String[] args) {
+<span class="nc" id="L28">        super();</span>
+<span class="nc" id="L29">        this.gui = gui;</span>
+<span class="nc" id="L30">        this.args = args;</span>
+<span class="nc" id="L31">        this.globalInfoView = new GlobalInfoView(gui);</span>
+<span class="nc" id="L32">        this.deckView = new DeckView(gui);</span>
+<span class="nc" id="L33">        this.tradingAreaView = new TradingAreaView(gui, this);</span>
+<span class="nc" id="L34">    }</span>
+
+    public void setGameController(GameController gameController) {
+<span class="nc" id="L37">        this.gameController = gameController;</span>
+<span class="nc" id="L38">    }</span>
+
+    public GlobalInfoView getGlobalInfoView() {
+<span class="nc" id="L41">        return globalInfoView;</span>
+    }
+
+    public DeckView getDeckView(){
+<span class="nc" id="L45">        return deckView;</span>
+    }
+    public TradingAreaView getTradingAreaView(){
+<span class="nc" id="L48">        return tradingAreaView;</span>
+    }
+
+    public PlayerView[] getPlayerViews(){
+<span class="nc" id="L52">        return playerViews;</span>
+    }
+    public GUI getGui(){
+<span class="nc" id="L55">        return gui;</span>
+    }
+
+    @Override
+    public void run() {
+<span class="nc" id="L60">        setupGUI();</span>
+<span class="nc" id="L61">    }</span>
+
+    private void setupGUI(){
+<span class="nc" id="L64">        globalInfoView.updateGameInfo(&quot;Click start to start the game.&quot;);</span>
+<span class="nc" id="L65">        startButton = gui.addButton(&quot;start&quot;, new Coordinate(10, 100), BUTTON_SIZE, button -&gt; {</span>
+<span class="nc" id="L66">            gameController.userClickStart();</span>
+<span class="nc" id="L67">            gameController.userActionCompleted();</span>
+<span class="nc" id="L68">        });</span>
+
+        // a button to explicitly terminate the game and closes the window.
+<span class="nc" id="L71">        gui.addButton(&quot;exit&quot;, new Coordinate(200, 100), BUTTON_SIZE, button -&gt; {</span>
+<span class="nc" id="L72">            gui.stop();</span>
+<span class="nc" id="L73">        });</span>
+
+        // set the handler for drag'n'drop events. With this handler:
+        // - whenever a d'n'd action finishes, the dropped card is flipped (toggle whether the front or back is shown)
+        // - the card is moved to the front, i.e., displayed top-most
+<span class="nc" id="L78">        gui.setCardDnDHandler((CardObject card, Coordinate originalCoordinate, Coordinate newCoordinate) -&gt; {</span>
+<span class="nc" id="L79">            CardMoveEvent cardMoveEvent = new CardMoveEvent(originalCoordinate, newCoordinate, card);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            if(!gameController.actionIsAllowed(cardMoveEvent)){</span>
+<span class="nc" id="L81">                return originalCoordinate;</span>
+            }
+<span class="nc" id="L83">            card.flip();</span>
+<span class="nc" id="L84">            gameController.userActionCompleted();</span>
+<span class="nc" id="L85">            return newCoordinate;</span>
+        });
+
+<span class="nc" id="L88">        nextPhaseButton = gui.addButton(&quot;Next phase&quot;, new Coordinate(10, 350), new Size(200, 25), button -&gt; {</span>
+<span class="nc" id="L89">            gameController.nextPhaseButtonClicked();</span>
+<span class="nc" id="L90">            gui.setButtonEnabled(nextPhaseButton, false);</span>
+<span class="nc" id="L91">        });</span>
+<span class="nc" id="L92">        gui.setButtonEnabled(nextPhaseButton, false);</span>
+
+<span class="nc" id="L94">    }</span>
+
+<span class="nc" id="L96">    final Size BUTTON_SIZE = new Size(100, 25);</span>
+    private Map&lt;CardObject, Card&gt; cardObjectToCardMap;
+    public void updateInitialView(List&lt;Card&gt; drawPile, List&lt;Player&gt; players, int activePlayerId){
+        // Disable the start button after start
+<span class="nc" id="L100">        gui.setButtonEnabled(startButton, false);</span>
+        //gui.setButtonEnabled(activePlayerButton, true);
+<span class="nc" id="L102">        globalInfoView.updateGameInfo(&quot;&quot;);</span>
+
+<span class="nc" id="L104">        cardObjectToCardMap = deckView.displayDrawPile(drawPile);</span>
+
+<span class="nc" id="L106">        playerViews = new PlayerView[players.size()];</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        for (int i = 0; i &lt; players.size(); i++) {</span>
+<span class="nc" id="L108">            playerViews[i] = new PlayerView(gui, players.get(i), i, deckView);</span>
+        }
+<span class="nc" id="L110">    }</span>
+
+//    public void enableActivePlayerButton(){
+//        gui.setButtonEnabled(activePlayerButton, true);
+//    }
+
+    public void enableNextPhaseButton(){
+<span class="nc" id="L117">        gui.setButtonEnabled(nextPhaseButton, true);</span>
+<span class="nc" id="L118">    }</span>
+
+    public Map&lt;CardObject, Card&gt; getCardObjectToCardMap() {
+<span class="nc" id="L121">        return cardObjectToCardMap;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DeckView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">DeckView.java</span></div><h1>DeckView.java</h1><pre class="source lang-java linenums">package view;
+
+import io.bitbucket.plt.sdp.bohnanza.gui.*;
+import card.Card;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class DeckView {
+    private final GUI gui;
+    private Compartment drawPileCompartment;
+    private Compartment discardPileCompartment;
+
+<span class="nc" id="L16">    public DeckView(GUI gui) {</span>
+<span class="nc" id="L17">        this.gui = gui;</span>
+<span class="nc" id="L18">        setupDeckView();</span>
+<span class="nc" id="L19">    }</span>
+
+<span class="nc" id="L21">    final int X_DRAW = 600;</span>
+<span class="nc" id="L22">    final int Y_DRAW = 50;</span>
+<span class="nc" id="L23">    final Coordinate drawPilePosition = new Coordinate(X_DRAW, Y_DRAW);</span>
+<span class="nc" id="L24">    final int X_DISCARD = 850;</span>
+<span class="nc" id="L25">    final int Y_DISCARD = 50;</span>
+<span class="nc" id="L26">    final Coordinate discardPilePosition = new Coordinate(X_DISCARD, Y_DISCARD);</span>
+<span class="nc" id="L27">    final Size compartmentSize = new Size(150, 200);</span>
+    private void setupDeckView() {
+<span class="nc" id="L29">        drawPileCompartment = gui.addCompartment(drawPilePosition, compartmentSize, &quot;Draw\nPile&quot;);</span>
+<span class="nc" id="L30">        discardPileCompartment = gui.addCompartment(discardPilePosition, compartmentSize, &quot;Discard\nPile&quot;);</span>
+<span class="nc" id="L31">    }</span>
+
+    /**
+     * updateDrawPile removes the first card drawn by the player from the draw pile
+     */
+    public void updateDrawPile(Card card) throws Exception {
+<span class="nc" id="L37">        CardObject[] drawPile = gui.getCardObjectsInCompartment(drawPileCompartment);</span>
+<span class="nc" id="L38">        CardObject drawnCard = drawPile[0];</span>
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (drawnCard.getCardType() == card.getCardType()){</span>
+<span class="nc" id="L41">            gui.removeCard(drawnCard);</span>
+        }else{
+<span class="nc" id="L43">            throw new Exception();</span>
+        }
+<span class="nc" id="L45">    }</span>
+
+
+<span class="nc" id="L48">    private static final Map&lt;CardObject, Card&gt; cardObjectToCardMap = new HashMap&lt;&gt;();</span>
+    public Map&lt;CardObject, Card&gt; displayDrawPile(List&lt;Card&gt; drawPile){
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        for (Card card : drawPile) {</span>
+<span class="nc" id="L51">            CardObject cardObject = gui.addCard(card.getCardType(), drawPilePosition);</span>
+<span class="nc" id="L52">            cardObjectToCardMap.put(cardObject, card);</span>
+<span class="nc" id="L53">        }</span>
+<span class="nc" id="L54">        return cardObjectToCardMap;</span>
+    }
+
+    public void updateDiscardPile(List&lt;Card&gt; discardPile) {
+
+<span class="nc" id="L59">    }</span>
+
+    public Compartment getDrawPileCompartment(){
+<span class="nc" id="L62">        return drawPileCompartment;</span>
+    }
+
+    public Coordinate getDiscardPilePosition(){
+<span class="nc" id="L66">        return discardPilePosition;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

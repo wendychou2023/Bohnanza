@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TradingAreaView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">TradingAreaView.java</span></div><h1>TradingAreaView.java</h1><pre class="source lang-java linenums">package view;
+
+import card.Card;
+import io.bitbucket.plt.sdp.bohnanza.gui.*;
+import org.eclipse.swt.internal.C;
+
+import java.util.List;
+
+public class TradingAreaView {
+    private final GUI gui;
+    private final GameView gameView;
+    private Compartment firstTradingCompartment;
+    private Compartment secondTradingCompartment;
+<span class="nc" id="L14">    private int tradedCard = 0;</span>
+
+<span class="nc" id="L16">    public TradingAreaView(GUI gui, GameView gameView) {</span>
+<span class="nc" id="L17">        this.gui = gui;</span>
+<span class="nc" id="L18">        this.gameView = gameView;</span>
+<span class="nc" id="L19">        setupTradingView();</span>
+<span class="nc" id="L20">    }</span>
+
+<span class="nc" id="L22">    final int X_First = 600;</span>
+<span class="nc" id="L23">    final int Y_First = 300;</span>
+<span class="nc" id="L24">    final Coordinate firstTradingPosition = new Coordinate(X_First, Y_First);</span>
+<span class="nc" id="L25">    final int X_Second = 850;</span>
+<span class="nc" id="L26">    final int Y_Second = 300;</span>
+<span class="nc" id="L27">    final Coordinate secondTradingPosition = new Coordinate(X_Second, Y_Second);</span>
+<span class="nc" id="L28">    final Size tradeCompartmentSize = new Size(150, 200);</span>
+    Button tradeButton;
+<span class="nc" id="L30">    Coordinate tradeButtonCoordinate = new Coordinate(760,400);</span>
+<span class="nc" id="L31">    Size BUTTON_SIZE = new Size(80, 25);</span>
+
+    private void setupTradingView() {
+<span class="nc" id="L34">        firstTradingCompartment = gui.addCompartment(firstTradingPosition, tradeCompartmentSize, &quot;Active Player\nTrading Area&quot;);</span>
+<span class="nc" id="L35">        secondTradingCompartment = gui.addCompartment(secondTradingPosition, tradeCompartmentSize, &quot;Non Active Player\nTrading Area&quot;);</span>
+<span class="nc" id="L36">        tradeButton = gui.addButton(&quot;Trade&quot;, tradeButtonCoordinate, BUTTON_SIZE, button -&gt; {</span>
+<span class="nc" id="L37">            tradeCard();</span>
+<span class="nc" id="L38">            tradedCard++;</span>
+<span class="nc" id="L39">        });</span>
+<span class="nc" id="L40">        gui.setButtonEnabled(tradeButton, false);</span>
+<span class="nc" id="L41">    }</span>
+
+    /**
+     * Exchange cards in the two trade compartments
+     */
+    private void tradeCard(){
+<span class="nc" id="L47">        CardObject[] activePlayerCard = gui.getCardObjectsInCompartment(firstTradingCompartment);</span>
+<span class="nc" id="L48">        CardObject[] nonActivePlayerCard = gui.getCardObjectsInCompartment(secondTradingCompartment);</span>
+
+<span class="nc bnc" id="L50" title="All 4 branches missed.">        if (activePlayerCard != null &amp;&amp; nonActivePlayerCard !=null){</span>
+<span class="nc" id="L51">            gui.moveCard(activePlayerCard[0], secondTradingPosition);</span>
+<span class="nc" id="L52">            gui.moveCard(nonActivePlayerCard[0], firstTradingPosition);</span>
+
+<span class="nc" id="L54">            gui.setButtonEnabled(tradeButton, false);</span>
+        }
+<span class="nc" id="L56">    }</span>
+
+    /**
+     * updateFirtTrade removes the first card drawn by the player from the Handcards
+     */
+    public void updateFirstTrade(Card card)  {
+
+<span class="nc" id="L63">    }</span>
+
+<span class="nc" id="L65">    Coordinate[] tradingCardCoordinates = new Coordinate[2];</span>
+    public void displayTradeCards(List&lt;Card&gt; tradingCards){
+<span class="nc" id="L67">        CardObject[] drawPile = gui.getCardObjectsInCompartment(gameView.getDeckView().getDrawPileCompartment());</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (int i = 0; i &lt; 2; i++){</span>
+<span class="nc" id="L69">            tradingCardCoordinates[i] = new Coordinate(1100 + 150 * i, 300);</span>
+<span class="nc" id="L70">            gui.moveCard(drawPile[i], tradingCardCoordinates[i]);</span>
+<span class="nc" id="L71">            drawPile[i].flip();</span>
+        }
+<span class="nc" id="L73">    }</span>
+
+    public boolean tradingCardMoved(Coordinate coordinate){
+<span class="nc bnc" id="L76" title="All 8 branches missed.">        return (coordinate.x == tradingCardCoordinates[0].x &amp;&amp; coordinate.y == tradingCardCoordinates[0].y) ||</span>
+                (coordinate.x == tradingCardCoordinates[1].x &amp;&amp; coordinate.y == tradingCardCoordinates[1].y);
+    }
+
+    private boolean withinBound(Coordinate coordinate, Coordinate compartmentCoordinate, Size compartmentSize){
+<span class="nc" id="L81">        int xMin = compartmentCoordinate.x;</span>
+<span class="nc" id="L82">        int yMin = compartmentCoordinate.y;</span>
+<span class="nc" id="L83">        int xMax = xMin + compartmentSize.width;</span>
+<span class="nc" id="L84">        int yMax = yMin + compartmentSize.height;</span>
+
+<span class="nc bnc" id="L86" title="All 8 branches missed.">        return coordinate.x &gt;= xMin &amp;&amp; coordinate.x &lt;= xMax &amp;&amp; coordinate.y &gt;= yMin &amp;&amp; coordinate.y &lt;= yMax;</span>
+    }
+
+    public boolean withinFirstTradingCompartment(Coordinate coordinate){
+<span class="nc" id="L90">        return withinBound(coordinate, firstTradingPosition, tradeCompartmentSize);</span>
+    }
+
+    public boolean withinSecondTradingCompartment(Coordinate coordinate, boolean beforeTrade){
+<span class="nc" id="L94">        boolean result = withinBound(coordinate, secondTradingPosition, tradeCompartmentSize);</span>
+
+<span class="nc bnc" id="L96" title="All 4 branches missed.">        if (result &amp;&amp; beforeTrade){</span>
+<span class="nc" id="L97">            gui.setButtonEnabled(tradeButton, true);</span>
+        }
+
+<span class="nc" id="L100">        return result;</span>
+    }
+
+    public int getNumOfTradedCard(){
+<span class="nc" id="L104">        return tradedCard;</span>
+    }
+
+    public boolean compartmentsAreEmpty(){
+<span class="nc" id="L108">        CardObject[] activePlayerCard = gui.getCardObjectsInCompartment(firstTradingCompartment);</span>
+<span class="nc" id="L109">        CardObject[] nonActivePlayerCard = gui.getCardObjectsInCompartment(secondTradingCompartment);</span>
+
+<span class="nc bnc" id="L111" title="All 4 branches missed.">        return activePlayerCard.length == 0 &amp;&amp; nonActivePlayerCard.length == 0;</span>
+    }
+
+    public Compartment getFirstTradingCompartment(){
+<span class="nc" id="L115">        return firstTradingCompartment;</span>
+    }
+
+    public Compartment getSecondTradingCompartment(){
+<span class="nc" id="L119">        return secondTradingCompartment;</span>
+    }
+
+    public void setTradedCard(){
+<span class="nc" id="L123">        tradedCard = 0;</span>
+<span class="nc" id="L124">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

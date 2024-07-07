@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">view</a> &gt; <span class="el_source">PlayerView.java</span></div><h1>PlayerView.java</h1><pre class="source lang-java linenums">package view;
+
+import org.eclipse.swt.graphics.Rectangle;
+import player.Player;
+import card.Card;
+import io.bitbucket.plt.sdp.bohnanza.gui.*;
+
+public class PlayerView {
+    private final GUI gui;
+    private final Player player;
+    private final int playerId;
+    private DeckView deckView;
+    private Compartment handCompartment;
+    private Compartment[] beanFieldCompartment;
+    private Compartment beanFieldImage;
+    private Label coinLabel;
+
+<span class="nc" id="L18">    public PlayerView(GUI gui, Player player, int playerId, DeckView deckView) {</span>
+<span class="nc" id="L19">        this.gui = gui;</span>
+<span class="nc" id="L20">        this.player = player;</span>
+<span class="nc" id="L21">        this.playerId = playerId;</span>
+<span class="nc" id="L22">        this.deckView = deckView;</span>
+
+<span class="nc" id="L24">        player.setPlayerView(this);</span>
+<span class="nc" id="L25">        setupPlayerView();</span>
+<span class="nc" id="L26">    }</span>
+
+    Coordinate handUpperLeftCoordinate;
+    Size handCompartmentSize;
+    Coordinate bfImageUpperLeftCoordinate;
+    Size bfImageComparmentSize;
+    Coordinate[] bfCompartmentUpperLeftCoordinate;
+    Button[] harvestButtons;
+    Size bfCompartmentSize;
+<span class="nc" id="L35">    Size BUTTON_SIZE = new Size(70, 25);</span>
+
+    private void setupPlayerView() {
+<span class="nc" id="L38">        handUpperLeftCoordinate = new Coordinate(500 * playerId, 800);</span>
+<span class="nc" id="L39">        handCompartmentSize = new Size(500, 400);</span>
+<span class="nc" id="L40">        bfImageUpperLeftCoordinate = new Coordinate(500 * playerId, 550);</span>
+<span class="nc" id="L41">        bfImageComparmentSize = new Size(500, 250);</span>
+<span class="nc" id="L42">        bfCompartmentSize = new Size(170, 250);</span>
+
+<span class="nc" id="L44">        handCompartment = gui.addCompartment(handUpperLeftCoordinate, handCompartmentSize, &quot;Player &quot; + playerId);</span>
+<span class="nc" id="L45">        beanFieldImage = gui.addCompartment(bfImageUpperLeftCoordinate, bfImageComparmentSize, &quot;&quot;, &quot;BOHNENFELD_ALLE&quot;);</span>
+<span class="nc" id="L46">        beanFieldCompartment = new Compartment[3];</span>
+<span class="nc" id="L47">        bfCompartmentUpperLeftCoordinate = new Coordinate[3];</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        for (int i = 0; i &lt; beanFieldCompartment.length; i++) {</span>
+<span class="nc" id="L49">            bfCompartmentUpperLeftCoordinate[i] = new Coordinate(500 * playerId + 170 * i, 550);</span>
+<span class="nc" id="L50">            beanFieldCompartment[i] = gui.addCompartment(</span>
+                    bfCompartmentUpperLeftCoordinate[i],
+                    bfCompartmentSize,
+                    &quot;_&quot; + (i + 1)
+            );
+        }
+
+<span class="nc" id="L57">        harvestButtons = new Button[3];</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        for(int i = 0; i &lt; beanFieldCompartment.length; i++){</span>
+<span class="nc" id="L59">            int finalI = i;</span>
+<span class="nc" id="L60">            harvestButtons[i] = gui.addButton(&quot;harvest&quot;, new Coordinate(500 * playerId + 170 * i, 525), BUTTON_SIZE, button -&gt; {</span>
+<span class="nc" id="L61">                int plantingSpotIdx = finalI;</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">                if(player.getBeanField().canHarvest(plantingSpotIdx)){</span>
+<span class="nc" id="L63">                    player.getBeanField().harvest(plantingSpotIdx);</span>
+                    // discard card
+<span class="nc" id="L65">                    CardObject[] cardsInPlantingSpot = gui.getCardObjectsInCompartment(beanFieldCompartment[plantingSpotIdx]);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">                    for (CardObject discardedCard: cardsInPlantingSpot){</span>
+<span class="nc" id="L67">                        gui.moveCard(discardedCard, deckView.getDiscardPilePosition());</span>
+                    }
+<span class="nc" id="L69">                    updateCoinLabel();</span>
+                }
+<span class="nc" id="L71">            });</span>
+        }
+
+<span class="nc" id="L74">        coinLabel = gui.addLabel(new Coordinate(500 * playerId, 500), &quot;Coins: &quot; + player.getCoins());</span>
+<span class="nc" id="L75">    }</span>
+
+    private void updateCoinLabel(){
+<span class="nc" id="L78">        coinLabel.updateLabel(&quot;Coins: &quot; + player.getCoins());</span>
+<span class="nc" id="L79">    }</span>
+
+    public void updateHandView(Card card) {
+<span class="nc" id="L82">        CardObject[] drawPile = gui.getCardObjectsInCompartment(deckView.getDrawPileCompartment());</span>
+<span class="nc" id="L83">        gui.moveCard(drawPile[0], handUpperLeftCoordinate);</span>
+<span class="nc" id="L84">        drawPile[0].flip();</span>
+<span class="nc" id="L85">        arrangeCardsInCompartment(handCompartment);</span>
+<span class="nc" id="L86">    }</span>
+
+    private void arrangeCardsInCompartment(Compartment compartment){
+<span class="nc" id="L89">        CardObject[] cardObjects = gui.getCardObjectsInCompartment(compartment);</span>
+<span class="nc" id="L90">        gui.setCardFlipFlags(cardObjects);</span>
+<span class="nc" id="L91">        compartment.distributeHorizontal(cardObjects);</span>
+<span class="nc" id="L92">    }</span>
+
+    public void updateBeanFieldView(int plantingSpotId) {
+<span class="nc" id="L95">        Compartment plantedCompartment = beanFieldCompartment[plantingSpotId];</span>
+<span class="nc" id="L96">        CardObject[] cardObjects = gui.getCardObjectsInCompartment(plantedCompartment);</span>
+
+<span class="nc" id="L98">        plantedCompartment.distributeVertical(cardObjects);</span>
+<span class="nc" id="L99">    }</span>
+
+    public void updateCoins() {
+<span class="nc" id="L102">        coinLabel.updateLabel(&quot;Coins: &quot; + player.getCoins());</span>
+<span class="nc" id="L103">    }</span>
+
+    private boolean withinBound(Coordinate coordinate, Coordinate compartmentCoordinate, Size compartmentSize){
+<span class="nc" id="L106">        int xMin = compartmentCoordinate.x;</span>
+<span class="nc" id="L107">        int yMin = compartmentCoordinate.y;</span>
+<span class="nc" id="L108">        int xMax = xMin + compartmentSize.width;</span>
+<span class="nc" id="L109">        int yMax = yMin + compartmentSize.height;</span>
+
+<span class="nc bnc" id="L111" title="All 8 branches missed.">        return coordinate.x &gt;= xMin &amp;&amp; coordinate.x &lt;= xMax &amp;&amp; coordinate.y &gt;= yMin &amp;&amp; coordinate.y &lt;= yMax;</span>
+    }
+
+    public boolean toInBeanField(Coordinate coordinate) {
+<span class="nc" id="L115">        return withinBound(coordinate, bfImageUpperLeftCoordinate,bfImageComparmentSize);</span>
+    }
+
+    public boolean fromInHand(Coordinate coordinate) {
+<span class="nc" id="L119">        return withinBound(coordinate, handUpperLeftCoordinate, handCompartmentSize);</span>
+    }
+
+    public int getPlantingSpotIdx(Coordinate coordinate){
+        int idx;
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        for(idx = 0; idx &lt; 3; idx++){</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            if(withinBound(coordinate, bfCompartmentUpperLeftCoordinate[idx], bfCompartmentSize)){</span>
+<span class="nc" id="L126">                break;</span>
+            }
+        }
+
+<span class="nc" id="L130">        return idx;</span>
+    }
+
+    public Compartment getBeanFieldCompartment(int idx){
+<span class="nc" id="L134">        return beanFieldCompartment[idx];</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TradingPhase.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">player.phase</a> &gt; <span class="el_source">TradingPhase.java</span></div><h1>TradingPhase.java</h1><pre class="source lang-java linenums">package player.phase;
+
+import card.Card;
+import game.CardMoveEvent;
+import game.Deck;
+import game.Game;
+import io.bitbucket.plt.sdp.bohnanza.gui.CardObject;
+import io.bitbucket.plt.sdp.bohnanza.gui.Compartment;
+import io.bitbucket.plt.sdp.bohnanza.gui.Coordinate;
+import player.Player;
+import view.GameView;
+import view.PlayerView;
+import view.TradingAreaView;
+
+import java.util.List;
+import java.util.Map;
+
+<span class="fc" id="L18">public class TradingPhase implements Phase {</span>
+<span class="fc" id="L19">    Phase nextPhase = new DrawPhase();</span>
+    Player player;
+    Game game;
+    Deck deck;
+    List&lt;Card&gt; tradingCards;
+    TradingAreaView tradingAreaView;
+    PlayerView[] playerViews;
+    GameView gameView;
+    Map&lt;CardObject, Card&gt; cardObjectToCardMap;
+
+    @Override
+    public void startPhase(Player player, GameView gameView) {
+<span class="nc" id="L31">        this.player = player;</span>
+<span class="nc" id="L32">        this.game = Game.getInstance();</span>
+<span class="nc" id="L33">        this.deck = game.getDeck();</span>
+
+<span class="nc" id="L35">        this.gameView = gameView;</span>
+<span class="nc" id="L36">        this.tradingAreaView = gameView.getTradingAreaView();</span>
+<span class="nc" id="L37">        this.playerViews = gameView.getPlayerViews();</span>
+
+<span class="nc" id="L39">        this.cardObjectToCardMap = gameView.getCardObjectToCardMap();</span>
+
+<span class="nc" id="L41">        tradingAreaView.setTradedCard();</span>
+
+<span class="nc" id="L43">        prepareForTrade();</span>
+<span class="nc" id="L44">    }</span>
+
+    private void prepareForTrade(){
+<span class="nc" id="L47">        tradingCards = deck.drawN(2); //draw 2 cards for trading</span>
+<span class="nc" id="L48">        tradingAreaView.displayTradeCards(tradingCards);</span>
+<span class="nc" id="L49">    }</span>
+
+    @Override
+    public void endPhase(Player player) {
+
+<span class="nc" id="L54">    }</span>
+
+<span class="fc" id="L56">    boolean tradingCardSelected = false;</span>
+<span class="fc" id="L57">    boolean nonActivePlayerOfferCard = false;</span>
+<span class="fc" id="L58">    int trackNumOfTradedCard = 0;</span>
+    int nonActivePlayerId;
+    int offeredCardIdx;
+    /**
+     * isMoveValid checks the following:
+     * Case 1: Players place trading card
+     *    a. from coordinate is one of the two trading cards &amp; to coordinate is the first trading compartment
+     *    b. from coordinate is one of the player compartment &amp; to coordinate is the second trading compartment
+     * Only allows players to trade one card at a time.
+     * Case 2: Players plant card after trading
+     *
+     * @param cardMoveEvent contains from coordinate, to coordinate, and cardObject
+     * @return boolean
+     */
+    @Override
+    public boolean isMoveValid(CardMoveEvent cardMoveEvent) {
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        if(trackNumOfTradedCard == tradingAreaView.getNumOfTradedCard() - 1</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">                &amp;&amp; tradingAreaView.compartmentsAreEmpty()){</span>
+<span class="nc" id="L76">            trackNumOfTradedCard++;</span>
+<span class="nc" id="L77">            tradingCardSelected = false;</span>
+<span class="nc" id="L78">            nonActivePlayerOfferCard = false;</span>
+        }
+
+        // Case 1a
+<span class="nc bnc" id="L82" title="All 4 branches missed.">        if (!tradingCardSelected &amp;&amp; tradingAreaView.tradingCardMoved(cardMoveEvent.from)</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                &amp;&amp; tradingAreaView.withinFirstTradingCompartment(cardMoveEvent.to)){</span>
+<span class="nc" id="L84">            tradingCardSelected = true;</span>
+<span class="nc" id="L85">            return true;</span>
+        }
+
+<span class="nc" id="L88">        boolean fromNonActivePlayerHand = false;</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        for (int i = 0; i &lt; playerViews.length; i++){</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (i != player.getPlayerId()){</span>
+<span class="nc" id="L91">                fromNonActivePlayerHand = playerViews[i].fromInHand(cardMoveEvent.from);</span>
+            }
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            if (fromNonActivePlayerHand){</span>
+<span class="nc" id="L95">                nonActivePlayerId = i;</span>
+<span class="nc" id="L96">                break;</span>
+            }
+        }
+
+        // Case 1b
+<span class="nc bnc" id="L101" title="All 6 branches missed.">        if (!nonActivePlayerOfferCard &amp;&amp; tradingCardSelected &amp;&amp; fromNonActivePlayerHand &amp;&amp;</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">                tradingAreaView.withinSecondTradingCompartment(cardMoveEvent.to, true)){</span>
+<span class="nc" id="L103">            nonActivePlayerOfferCard = true;</span>
+
+<span class="nc" id="L105">            Player nonActivePlayer = game.getPlayers().get(nonActivePlayerId);</span>
+<span class="nc" id="L106">            Card cardMoved = cardObjectToCardMap.get(cardMoveEvent.card);</span>
+            Card handCard;
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            for (int j = 0; j &lt; nonActivePlayer.getHandCards().size(); j++){</span>
+<span class="nc" id="L109">                handCard = nonActivePlayer.getHandCards().get(j);</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                if (cardMoved == handCard){</span>
+<span class="nc" id="L111">                    offeredCardIdx = j;</span>
+<span class="nc" id="L112">                    break;</span>
+                }
+            }
+
+<span class="nc" id="L116">            return true;</span>
+        }
+
+        // Case 2
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        if (trackNumOfTradedCard == tradingAreaView.getNumOfTradedCard() - 1</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                &amp;&amp; !tradingAreaView.compartmentsAreEmpty()){</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">            if (tradingAreaView.withinFirstTradingCompartment(cardMoveEvent.from)</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">                    &amp;&amp; playerViews[player.getPlayerId()].toInBeanField(cardMoveEvent.to)) {</span>
+<span class="nc" id="L124">                return canPlant(player, playerViews[player.getPlayerId()], cardMoveEvent);</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            } else if (tradingAreaView.withinSecondTradingCompartment(cardMoveEvent.from, false)</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                    &amp;&amp; playerViews[nonActivePlayerId].toInBeanField(cardMoveEvent.to)) {</span>
+<span class="nc" id="L127">                Player nonActivePlayer = game.getPlayers().get(nonActivePlayerId);</span>
+<span class="nc" id="L128">                boolean result = canPlant(nonActivePlayer, playerViews[nonActivePlayerId], cardMoveEvent);</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                if (result){</span>
+<span class="nc" id="L130">                    nonActivePlayer.popFromHand(offeredCardIdx);</span>
+                }
+<span class="nc" id="L132">                return result;</span>
+            }
+        }
+
+<span class="nc" id="L136">        return false;</span>
+    }
+
+    private boolean canPlant(Player plantingPlayer, PlayerView playerView, CardMoveEvent cardMoveEvent){
+<span class="nc" id="L140">        int plantingSpot = playerView.getPlantingSpotIdx(cardMoveEvent.to);</span>
+<span class="nc" id="L141">        Card cardToPlant = cardObjectToCardMap.get(cardMoveEvent.card);</span>
+
+<span class="nc bnc" id="L143" title="All 2 branches missed.">        if (plantingSpot &gt;= plantingPlayer.getBeanField().getNumberOfFields()){</span>
+<span class="nc" id="L144">            return false;</span>
+        }
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (plantingPlayer.getBeanField().canPlant(plantingSpot, cardToPlant)){</span>
+<span class="nc" id="L148">            plantingPlayer.getBeanField().plant(plantingSpot, cardToPlant);</span>
+<span class="nc" id="L149">            playerView.updateBeanFieldView(plantingSpot);</span>
+<span class="nc" id="L150">            return true;</span>
+        }else{
+<span class="nc" id="L152">            return false;</span>
+        }
+    }
+
+    @Override
+    public boolean canEnableNextPhase() {
+<span class="nc bnc" id="L158" title="All 6 branches missed.">        return (trackNumOfTradedCard == 1 || trackNumOfTradedCard == 2) &amp;&amp; tradingAreaView.compartmentsAreEmpty();</span>
+    }
+
+    @Override
+    public Phase getNextPhase() {
+<span class="nc" id="L163">        return nextPhase;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L168">        return this.getClass().getSimpleName();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BeanField.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">player</a> &gt; <span class="el_source">BeanField.java</span></div><h1>BeanField.java</h1><pre class="source lang-java linenums">package player;
+
+import card.Card;
+import game.Game;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class BeanField {
+    private final Player player;
+<span class="fc" id="L11">    private final List&lt;PlantingSpot&gt; plantingSpots = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L13">    protected BeanField(Player player) {</span>
+<span class="fc" id="L14">        this.player = player;</span>
+<span class="fc" id="L15">    }</span>
+
+    /**
+     * returns if there is any field that can the card can be planted in
+     */
+    public boolean canPlant(Card card) {
+<span class="nc" id="L21">        return plantingSpots.stream().anyMatch(spot -&gt; spot.canPlant(card));</span>
+    }
+
+    /**
+     * returns if a card can be planted in field at index plantingSpotIdx
+     */
+    public boolean canPlant(int plantingSpotIdx, Card card) {
+<span class="nc" id="L28">        return plantingSpots.get(plantingSpotIdx).canPlant(card);</span>
+    }
+    public Card getCard(int plantingSpot) {
+        // Access some property or method of BeanField to get the card in the planting spot
+        // This is just a placeholder, replace with your actual logic
+<span class="nc" id="L33">        PlantingSpot spot = this.plantingSpots.get(plantingSpot);</span>
+<span class="nc" id="L34">        Card card = spot.getCard();</span>
+<span class="nc" id="L35">        return card;</span>
+    }
+
+    /**
+     * plant a bean in a field
+     * @param card to plant
+     * @param plantingSpotIdx index of the field to plant the card
+     * @throws RuntimeException if there is no field to plant the card
+     * see canPlant()
+     */
+    public void plant(int plantingSpotIdx, Card card) {
+<span class="fc" id="L46">        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (!spot.canPlant(card)) {</span>
+<span class="fc" id="L48">            throw new RuntimeException(&quot;can not plant card in field&quot;);</span>
+        }
+<span class="fc" id="L50">        spot.plant(card);</span>
+<span class="fc" id="L51">    }</span>
+
+    public List&lt;PlantingSpot&gt; getPlantingSpots(){
+<span class="nc" id="L54">        return plantingSpots;</span>
+    }
+
+<span class="fc" id="L57">    public int getNumberOfFields(){return plantingSpots.size();}</span>
+
+    public void addBeanfields(int numOfFields){
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (int i = 0; i &lt; numOfFields; i++) {</span>
+<span class="fc" id="L61">            plantingSpots.add(new PlantingSpot());</span>
+        }
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * harvest a field and add coins to player
+     * @param plantingSpotIdx index of the field to harvest
+     */
+    public void harvest(int plantingSpotIdx) {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (!canHarvest(plantingSpotIdx)) {</span>
+<span class="fc" id="L71">            throw new RuntimeException(&quot;can not harvest bean  of type: &quot;);</span>
+        }
+
+<span class="fc" id="L74">        uncheckedHarvest(plantingSpotIdx);</span>
+<span class="fc" id="L75">    }</span>
+
+    /**
+     * harvest a field and add coins to player without checking if it can be harvested
+     * @param plantingSpotIdx index of the field to harvest
+     */
+    private void uncheckedHarvest(int plantingSpotIdx) {
+<span class="fc" id="L82">        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);</span>
+<span class="fc" id="L83">        int cardCount = spot.getNumberOfBeans();</span>
+<span class="fc" id="L84">        Card card = spot.getPlantedCard();</span>
+<span class="fc" id="L85">        int coins = card.getHarvestRevenue(cardCount);</span>
+
+        // discard n cards (n = cardCount - coins as beancoins stay with player and are not discarded)
+<span class="fc" id="L88">        Game.getInstance().getDeck().discardN(card, cardCount - coins);</span>
+<span class="fc" id="L89">        player.addCoins(coins);</span>
+
+<span class="fc" id="L91">        spot.clear();</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * check if a field can be harvested
+     * returns false if field is empty
+     */
+    public boolean canHarvest(int plantingSpotIdx) {
+<span class="fc" id="L99">        PlantingSpot spot = plantingSpots.get(plantingSpotIdx);</span>
+
+        // can not harvest empty field
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (spot.isEmpty()) {</span>
+<span class="fc" id="L103">            return false;</span>
+        }
+
+        // Bean Protection Act
+<span class="fc" id="L107">        int n = spot.getNumberOfBeans();</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (n == 1) {</span>
+<span class="nc bnc" id="L109" title="All 4 branches missed.">            return !plantingSpots.stream().anyMatch(s -&gt; s.getNumberOfBeans() &gt; 1);</span>
+        }
+
+<span class="fc" id="L112">        return true;</span>
+    }
+
+    public int getNumberOfBeansInField(int plantingSpotIdx) {
+<span class="fc" id="L116">        return plantingSpots.get(plantingSpotIdx).getNumberOfBeans();</span>
+    }
+
+    /**
+     * get all planted beans
+     * empty fields are represented as card == null
+     */
+    public List&lt;Card&gt; getPlantedBeans() {
+<span class="fc" id="L124">        return plantingSpots.stream()</span>
+<span class="fc" id="L125">                .map(PlantingSpot::getPlantedCard)</span>
+<span class="fc" id="L126">                .collect(Collectors.toList());</span>
+    }
+
+    public boolean isEmpty(int plantingSpotIdx) {
+<span class="fc" id="L130">        return plantingSpots.get(plantingSpotIdx).isEmpty();</span>
+    }
+
+    /**
+     * harvest all fields and add coins to player
+     * used at the end of the game
+     */
+    public void harvestAll() {
+<span class="nc bnc" id="L138" title="All 2 branches missed.">        for (int i = 0; i &lt; getNumberOfFields(); i++) {</span>
+<span class="nc" id="L139">            uncheckedHarvest(i);</span>
+        }
+<span class="nc" id="L141">    }</span>
+
+    public void buyExtraBeanField() {
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (player.getCoins() &lt; 3) {</span>
+<span class="fc" id="L145">            throw new NotEnoughCoinsException();</span>
+        }
+
+        // throws excepion if player already has 3 fields
+<span class="fc" id="L149">        addBeanfields(1);</span>
+
+<span class="fc" id="L151">        player.removeCoins(3);</span>
+<span class="fc" id="L152">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L156">        return &quot;BeanField{&quot; +</span>
+                &quot;beans=&quot; + plantingSpots +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

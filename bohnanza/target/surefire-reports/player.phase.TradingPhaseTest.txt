@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: player.phase.TradingPhaseTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.051 s <<< FAILURE! - in null
+player.phase.TradingPhaseTest.isMoveValid_shouldReturnTrueForValidMoves  Time elapsed: 0.047 s  <<< ERROR!
+org.mockito.exceptions.base.MockitoException: 
+
+Cannot mock/spy class [Ljava.lang.String;
+Mockito cannot mock/spy because :
+ - VM does not support modification of given type
+	at player.phase.TradingPhaseTest.setUp(TradingPhaseTest.java:45)
+
+player.phase.TradingPhaseTest.startPhase_shouldInitializeCorrectly  Time elapsed: 0.001 s  <<< ERROR!
+org.mockito.exceptions.base.MockitoException: 
+
+Cannot mock/spy class [Ljava.lang.String;
+Mockito cannot mock/spy because :
+ - VM does not support modification of given type
+	at player.phase.TradingPhaseTest.setUp(TradingPhaseTest.java:45)
+

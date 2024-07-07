@@ -1,0 +1,30 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Demo usage of Bohnanza GUI,default,Main,52,0,0,0,7,0,2,0,2,0
+Demo usage of Bohnanza GUI,view,TradingAreaView,331,0,30,0,57,0,30,0,15,0
+Demo usage of Bohnanza GUI,view,GameView,218,0,4,0,48,0,18,0,16,0
+Demo usage of Bohnanza GUI,view,DeckView,125,0,4,0,29,0,10,0,8,0
+Demo usage of Bohnanza GUI,view,PlayerView,390,0,20,0,64,0,23,0,13,0
+Demo usage of Bohnanza GUI,view,GlobalInfoView,41,0,0,0,11,0,4,0,4,0
+Demo usage of Bohnanza GUI,game,CardMoveEvent,12,0,0,0,5,0,1,0,1,0
+Demo usage of Bohnanza GUI,game,GameController,261,34,16,0,74,10,21,1,13,1
+Demo usage of Bohnanza GUI,game,Deck,28,217,3,23,13,47,5,20,2,10
+Demo usage of Bohnanza GUI,game,Game,139,59,13,3,31,20,18,8,11,7
+Demo usage of Bohnanza GUI,player.phase,PlantingPhase,77,55,9,5,14,17,6,9,1,7
+Demo usage of Bohnanza GUI,player.phase,DrawPhase,11,18,0,0,3,7,1,6,1,6
+Demo usage of Bohnanza GUI,player.phase,TradingPhase,321,17,52,0,66,5,34,1,8,1
+Demo usage of Bohnanza GUI,player.phase,PlantingPhase.new Card() {...},9,0,0,0,2,0,2,0,2,0
+Demo usage of Bohnanza GUI,testdemo,HighscoreFormatter,0,77,0,4,0,15,0,5,0,3
+Demo usage of Bohnanza GUI,card,GreenBean,22,4,8,0,9,2,5,1,1,1
+Demo usage of Bohnanza GUI,card,ChiliBean,11,15,5,3,5,6,4,2,0,2
+Demo usage of Bohnanza GUI,card,RedBean,22,4,8,0,9,2,5,1,1,1
+Demo usage of Bohnanza GUI,card,StinkBean,22,4,8,0,9,2,5,1,1,1
+Demo usage of Bohnanza GUI,card,GardenBean,12,4,4,0,5,2,3,1,1,1
+Demo usage of Bohnanza GUI,card,Card,12,16,0,0,2,5,2,3,2,3
+Demo usage of Bohnanza GUI,card,BlackEyedBean,22,4,8,0,9,2,5,1,1,1
+Demo usage of Bohnanza GUI,card,SoyBean,22,4,8,0,9,2,5,1,1,1
+Demo usage of Bohnanza GUI,card,BlueBean,22,4,8,0,9,2,5,1,1,1
+Demo usage of Bohnanza GUI,player,PlantingSpot,0,65,0,8,0,17,0,14,0,10
+Demo usage of Bohnanza GUI,player,NotEnaughCardsException,3,0,0,0,1,0,1,0,1,0
+Demo usage of Bohnanza GUI,player,NotEnoughCoinsException,0,3,0,0,0,1,0,1,0,1
+Demo usage of Bohnanza GUI,player,BeanField,68,151,7,11,11,41,12,16,8,11
+Demo usage of Bohnanza GUI,player,Player,89,43,8,0,23,13,13,5,9,5

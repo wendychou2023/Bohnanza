@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">game</a> &gt; <span class="el_source">GameController.java</span></div><h1>GameController.java</h1><pre class="source lang-java linenums">package game;
+
+import io.bitbucket.plt.sdp.bohnanza.gui.GUI;
+import player.Player;
+import player.phase.Phase;
+import view.GameView;
+import view.GlobalInfoView;
+import view.DeckView;
+
+import java.util.Scanner;
+
+public class GameController {
+    //    private static GameController instance = null;
+    private Game game;
+    private GameView gameView;
+    private GUI gui;
+    private GlobalInfoView globalInfoView;
+    private DeckView deckView;
+<span class="fc" id="L19">    private boolean waitingForUserAction = true;</span>
+
+    Scanner scanner;
+
+<span class="fc" id="L23">    public GameController(Game game, GameView gameView, GUI gui) {</span>
+<span class="fc" id="L24">        this.game = game;</span>
+<span class="fc" id="L25">        this.gameView = gameView;</span>
+<span class="fc" id="L26">        this.gui = gui;</span>
+<span class="fc" id="L27">        this.scanner = new Scanner(System.in);</span>
+<span class="fc" id="L28">        this.globalInfoView = gameView.getGlobalInfoView();</span>
+<span class="fc" id="L29">        this.deckView = gameView.getDeckView();</span>
+
+        // Set this controller in the game and gameGUI
+<span class="fc" id="L32">        game.setGameController(this);</span>
+<span class="fc" id="L33">        gameView.setGameController(this);</span>
+<span class="nc" id="L34">        game.getDeck().setDeckView(deckView);</span>
+<span class="nc" id="L35">    }</span>
+
+    public void start() {
+<span class="nc" id="L38">        new Thread(gameView).start();</span>
+
+        // Read number of players
+<span class="nc" id="L41">        System.out.println(&quot;Enter number of players (3 to 5 players are allowed):&quot;);</span>
+<span class="nc" id="L42">        int numOfPlayers = scanner.nextInt();</span>
+<span class="nc" id="L43">        System.out.println(&quot;You entered: &quot; + numOfPlayers);</span>
+
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        for (int i = 0; i &lt; numOfPlayers; i++) {</span>
+<span class="nc" id="L46">            game.addPlayer(new Player(i));</span>
+        }
+
+<span class="nc" id="L49">        gui.start();</span>
+
+<span class="nc" id="L51">    }</span>
+
+    public void startGame() {
+<span class="nc" id="L54">        waitForUserAction();</span>
+<span class="nc" id="L55">        globalInfoView.updateGameInfo(&quot;Game started. Current round: &quot; + game.getCurrentRound());</span>
+<span class="nc" id="L56">        gameLoop();</span>
+<span class="nc" id="L57">    }</span>
+
+    Player activePlayer;
+    private void gameLoop() {
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        while (game.isGameNotOver()) {</span>
+
+<span class="nc" id="L63">            activePlayer = game.getActivePlayer();</span>
+<span class="nc" id="L64">            globalInfoView.updatePlayerInfo(&quot;Active player: &quot; + game.getActivePlayerID());</span>
+
+<span class="nc" id="L66">            activePlayer.startPlantingPhase(gameView);</span>
+
+<span class="nc" id="L68">            phaseLoop(activePlayer);</span>
+
+<span class="nc" id="L70">            game.nextPlayer();</span>
+
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            if (game.isRoundEnded()) {</span>
+<span class="nc" id="L73">                endRound();</span>
+            }
+        }
+
+<span class="nc" id="L77">        endGame();</span>
+<span class="nc" id="L78">    }</span>
+
+    private void phaseLoop(Player activePlayer) {
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        while (activePlayer.getCurrentPhase().getNextPhase() != null) {</span>
+<span class="nc" id="L82">            updateGUIForPhase(activePlayer);</span>
+<span class="nc" id="L83">            waitForUserAction();</span>
+
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            while(!activePlayer.getCurrentPhase().canEnableNextPhase()){</span>
+                try {
+<span class="nc" id="L87">                    Thread.sleep(100); // Check every 100 ms</span>
+<span class="nc" id="L88">                } catch (InterruptedException e) {</span>
+<span class="nc" id="L89">                    e.printStackTrace();</span>
+<span class="nc" id="L90">                }</span>
+            }
+
+<span class="nc" id="L93">            gameView.enableNextPhaseButton();</span>
+<span class="nc" id="L94">            waitNextPhaseButtonClicked();</span>
+<span class="nc" id="L95">            activePlayer.endPhaseAndStartNext(gameView);</span>
+        }
+<span class="nc" id="L97">    }</span>
+
+    /**
+     * Update current player and current phase on GUI.
+     *
+     * @param activePlayer
+     */
+    private void updateGUIForPhase(Player activePlayer) {
+<span class="nc" id="L105">        globalInfoView.updatePlayerInfo(&quot;Active player: &quot; + game.getActivePlayerID() + &quot; (&quot;+ activePlayer.getCurrentPhase() + &quot;, Number of planting spots: &quot;</span>
+<span class="nc" id="L106">                + activePlayer.getBeanField().getNumberOfFields() + &quot;)&quot;);</span>
+<span class="nc" id="L107">    }</span>
+
+    private void waitForUserAction() {
+<span class="nc" id="L110">        waitingForUserAction = true;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        while (waitingForUserAction) {</span>
+            try {
+<span class="nc" id="L113">                Thread.sleep(100); // Check every 100 ms</span>
+<span class="nc" id="L114">            } catch (InterruptedException e) {</span>
+<span class="nc" id="L115">                e.printStackTrace();</span>
+<span class="nc" id="L116">            }</span>
+        }
+<span class="nc" id="L118">    }</span>
+
+    private boolean nextPhaseButton;
+    private void waitNextPhaseButtonClicked() {
+<span class="nc" id="L122">        nextPhaseButton = true;</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        while (nextPhaseButton) {</span>
+            try {
+<span class="nc" id="L125">                Thread.sleep(100); // Check every 100 ms</span>
+<span class="nc" id="L126">            } catch (InterruptedException e) {</span>
+<span class="nc" id="L127">                e.printStackTrace();</span>
+<span class="nc" id="L128">            }</span>
+        }
+<span class="nc" id="L130">    }</span>
+
+    private void endRound() {
+<span class="nc" id="L133">        StringBuilder roundEndInfo = new StringBuilder(&quot;Round &quot; + (game.getCurrentRound() - 1) + &quot; ended\n&quot;);</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        for (Player player : game.getPlayers()) {</span>
+<span class="nc" id="L135">            roundEndInfo.append(&quot;Player &quot;).append(game.getPlayers().indexOf(player)).append(&quot;: &quot;)</span>
+<span class="nc" id="L136">                    .append(player.getBeanField()).append(&quot;\n&quot;);</span>
+<span class="nc" id="L137">        }</span>
+<span class="nc" id="L138">        globalInfoView.updateGameInfo(roundEndInfo.toString());</span>
+<span class="nc" id="L139">        game.resetRoundEnded();</span>
+<span class="nc" id="L140">    }</span>
+
+    private void endGame() {
+<span class="nc" id="L143">        game.endGame();</span>
+<span class="nc" id="L144">        globalInfoView.updateGameInfo(&quot;Game ended. Calculate winner.&quot;);</span>
+<span class="nc" id="L145">    }</span>
+
+    public void userActionCompleted() {
+<span class="nc" id="L148">        waitingForUserAction = false;</span>
+<span class="nc" id="L149">    }</span>
+
+    public void nextPhaseButtonClicked() {
+<span class="nc" id="L152">        nextPhaseButton = false;</span>
+<span class="nc" id="L153">    }</span>
+
+
+    public void userClickStart() {
+<span class="nc" id="L157">        new Thread(this::startGame).start();</span>
+<span class="nc" id="L158">        gameView.updateInitialView(game.getDeck().getDrawPile(), game.getPlayers(), game.getActivePlayerID());</span>
+<span class="nc" id="L159">        game.setupPlayers();</span>
+<span class="nc" id="L160">    }</span>
+
+    /**
+     * Trigger check of whether the player action on the view is valid
+     *
+     * @param cardMoveEvent
+     * @return
+     */
+    public boolean actionIsAllowed(CardMoveEvent cardMoveEvent){
+<span class="nc" id="L169">        Phase currentPhase = activePlayer.getCurrentPhase();</span>
+
+<span class="nc" id="L171">        return currentPhase.isMoveValid(cardMoveEvent);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

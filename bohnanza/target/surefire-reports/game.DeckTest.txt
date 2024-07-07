@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: game.DeckTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.006 s <<< FAILURE! - in null
+game.DeckTest.discardNCardsTest  Time elapsed: 0.003 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "view.DeckView.updateDiscardPile(java.util.List)" because "this.deckView" is null
+	at game.DeckTest.discardNCardsTest(DeckTest.java:65)
+

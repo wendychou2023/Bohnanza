@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlantingSpot.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Demo usage of Bohnanza GUI</a> &gt; <a href="index.source.html" class="el_package">player</a> &gt; <span class="el_source">PlantingSpot.java</span></div><h1>PlantingSpot.java</h1><pre class="source lang-java linenums">package player;
+
+import card.Card;
+
+<span class="fc" id="L5">public class PlantingSpot {</span>
+    private int numberOfBeans;
+<span class="fc" id="L7">    private Card plantedCard = null;</span>
+    private Card card;
+
+    public Card getPlantedCard() {
+<span class="fc" id="L11">        return plantedCard;</span>
+    }
+
+    public int getNumberOfBeans() {
+<span class="fc" id="L15">        return numberOfBeans;</span>
+    }
+
+    public void plant(Card card) {
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if (isEmpty()) {</span>
+<span class="fc" id="L20">            plantedCard = card;</span>
+        }
+<span class="fc" id="L22">        numberOfBeans++;</span>
+<span class="fc" id="L23">    }</span>
+
+
+    public void clear() {
+<span class="fc" id="L27">        plantedCard = null;</span>
+<span class="fc" id="L28">        numberOfBeans = 0;</span>
+<span class="fc" id="L29">    }</span>
+
+    public boolean canPlant(Card card) {
+<span class="fc bfc" id="L32" title="All 4 branches covered.">        return isEmpty() || plantedCard.equals(card);</span>
+    }
+
+    public boolean isEmpty() {
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        return numberOfBeans == 0;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L41">        return &quot;PlantingSpot{&quot; +</span>
+                &quot;plantedCard=&quot; + plantedCard + &quot;, &quot; +
+                &quot;numberOfBeans=&quot; + numberOfBeans +
+                '}';
+    }
+
+    public Card getCard() {
+<span class="fc" id="L48">        return card;</span>
+    }
+
+    public void setCard(Card card) {
+<span class="fc" id="L52">        this.card = card;</span>
+<span class="fc" id="L53">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

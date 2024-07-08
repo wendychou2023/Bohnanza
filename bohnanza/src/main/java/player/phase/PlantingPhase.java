@@ -104,4 +104,8 @@ public class PlantingPhase implements Phase {
     public String toString() {
         return this.getClass().getSimpleName();
     }
+
+    protected void setNumOfPlantedCard(int num){
+        this.numOfPlantedCard = num;
+    }
 }
